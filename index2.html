@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Farmers' Produce Sales Portal</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <meta name="description" content="Connect farmers directly with local buyers to get better prices for their produce." />
+  <style>
+    html { scroll-behavior: smooth; }
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    #mapContainer { height: 300px; width: 100%; border-radius: 12px; }
+    .location-status { font-size: 0.875rem; margin-top: 0.5rem; }
+  </style>
+</head>
+<body class="bg-neutral-50 text-neutral-800">
+
+  <!-- NAVBAR -->
+  <header class="sticky top-0 z-40 backdrop-blur bg-white/70 border-b border-neutral-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <a href="#hero" class="flex items-center gap-2 font-semibold text-lg">
+        <span class="inline-block w-8 h-8 rounded-xl bg-emerald-600"></span>
+        Farmers' Portal
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a href="#how" class="hover:text-emerald-700">How it works</a>
+        <a href="#map" class="hover:text-emerald-700">Buyers near you</a>
+        <a href="#browse" class="hover:text-emerald-700">Search buyers</a>
+        <a href="#register" class="px-3 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700">Register</a>
+      </nav>
+      <a href="#register" class="md:hidden px-3 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 text-sm">Register</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="hero" class="relative">
+    <div class="absolute inset-0 -z-10">
+      <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" alt="Fresh produce" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/50"></div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-28 lg:py-36 text-white">
+      <h1 class="text-3xl sm:text-5xl font-bold leading-tight max-w-3xl">Sell smarter. Earn better. Connect directly with local buyers.</h1>
+      <p class="mt-4 text-base sm:text-lg max-w-2xl text-white/90">List your produce, compare offers, and deliver to nearby restaurants, retail stores, and markets—without middlemen.</p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="#register" class="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 font-semibold">Register Now</a>
+        <a href="#browse" class="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20">Find Local Buyers</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl sm:text-3xl font-bold">How it works</h2>
+      <p class="text-neutral-600 mt-1">A simple 4-step process from listing to delivery.</p>
+      <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="p-5 rounded-2xl border bg-white shadow-sm">
+          <div class="text-emerald-700 font-semibold">1. Create your listing</div>
+          <p class="mt-2 text-sm text-neutral-600">Tell us your produce, quantity, and location. It takes less than a minute.</p>
+        </div>
+        <div class="p-5 rounded-2xl border bg-white shadow-sm">
+          <div class="text-emerald-700 font-semibold">2. Get matched</div>
+          <p class="mt-2 text-sm text-neutral-600">See nearby buyers actively looking for your produce and their average offers.</p>
+        </div>
+        <div class="p-5 rounded-2xl border bg-white shadow-sm">
+          <div class="text-emerald-700 font-semibold">3. Negotiate & confirm</div>
+          <p class="mt-2 text-sm text-neutral-600">Chat, confirm price & schedule pickup or delivery directly with buyers.</p>
+        </div>
+        <div class="p-5 rounded-2xl border bg-white shadow-sm">
+          <div class="text-emerald-700 font-semibold">4. Deliver & get paid</div>
+          <p class="mt-2 text-sm text-neutral-600">Complete delivery and receive payment through your preferred method.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAP -->
+  <section id="map" class="py-14 bg-white border-t border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col lg:flex-row gap-8 items-start">
+        <!-- Map container -->
+        <div class="flex-1">
+          <h2 class="text-2xl sm:text-3xl font-bold">Buyers near you</h2>
+          <p class="text-neutral-600 mt-1">Explore buyers within your radius using the interactive map below.</p>
+          <div id="mapContainer" class="mt-5 border shadow-sm"></div>
+          <div id="locationStatus" class="location-status text-sm text-neutral-600 mt-2">
+            Click "Use My Location" to see buyers near you.
+          </div>
+        </div>
+        <!-- Search controls -->
+        <div class="w-full lg:max-w-sm p-6 rounded-2xl border bg-neutral-50">
+          <h3 class="font-semibold">Your location</h3>
+          <p class="text-sm text-neutral-600 mt-1">Allow location access to find buyers near you.</p>
+          <div class="mt-4 space-y-3">
+            <button id="locateMe" class="w-full px-3 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700">
+              Use My Location
+            </button>
+            <div class="text-center text-sm text-neutral-500">or</div>
+            <input id="locationInput" type="text" placeholder="Enter your location manually" class="w-full px-3 py-2 rounded-xl border bg-white" />
+            <label class="block text-sm">Search Radius: <span id="distanceLabel">15</span> km</label>
+            <input id="distanceRangeMap" type="range" min="1" max="25" value="15" class="w-full cursor-pointer" />
+            <p class="text-xs text-neutral-500">This updates the buyers list based on your location.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
