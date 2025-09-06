@@ -142,4 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => statusEl.classList.add('hidden'), 3000);
     } else form.reportValidity();
   });
+
 });
+
