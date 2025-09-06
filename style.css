@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+:root {
+  --color-primary: #2A7D2E;
+  --color-primary-dark: #1E5E22;
+  --color-secondary: #FF9E1F;
+  --color-accent: #8BC34A;
+  --color-light: #F7F9F3;
+  --color-dark: #1A311C;
+}
+html { scroll-behavior: smooth; font-family: 'Inter', sans-serif; }
+h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; }
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+#mapContainer {
+  height: 300px;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.location-status {
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+.card-hover { transition: all 0.3s ease; }
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(42, 125, 46, 0.2);
+}
+.btn-secondary {
+  background-color: white;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  transition: all 0.3s ease;
+}
+.btn-secondary:hover {
+  background-color: var(--color-light);
+  transform: translateY(-2px);
+}
+.section-padding { padding: 5rem 0; }
+.text-primary { color: var(--color-primary); }
+.bg-light { background-color: var(--color-light); }
+.step-number {
+  width: 40px; height: 40px; border-radius: 50%;
+  background-color: var(--color-primary); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: bold; margin-bottom: 1rem;
+}
+.leaflet-popup-content-wrapper { border-radius: 8px; }
+.hand-drawn-border { position: relative; }
+.hand-drawn-border:after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 12px;
+  border: 2px solid var(--color-primary);
+  opacity: 0.1;
+  pointer-events: none;
+}
+.dark .hand-drawn-border:after {
+  border-color: #2A7D2E;
+  opacity: 0.2;
+}
+.dark .card-hover:hover {
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
