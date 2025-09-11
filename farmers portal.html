@@ -28,9 +28,12 @@
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <meta name="description" content="Connect farmers directly with local buyers to get better prices for their produce." />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+    
     :root {
       --color-primary: #2A7D2E;
       --color-primary-dark: #1E5E22;
@@ -39,79 +42,284 @@
       --color-light: #F7F9F3;
       --color-dark: #1A311C;
     }
-    html { scroll-behavior: smooth; font-family: 'Inter', sans-serif; }
-    h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; }
-    input[type=number]::-webkit-outer-spin-button,
-    input[type=number]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
+    
+    html { 
+      scroll-behavior: smooth; 
+      font-family: 'Inter', sans-serif;
     }
-    #mapContainer {
-      height: 300px;
-      width: 100%;
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Playfair Display', serif;
+    }
+    
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    
+    #mapContainer { 
+      height: 300px; 
+      width: 100%; 
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    .location-status {
-      font-size: 0.875rem;
-      margin-top: 0.5rem;
+    
+    .location-status { 
+      font-size: 0.875rem; 
+      margin-top: 0.5rem; 
     }
-    .card-hover { transition: all 0.3s ease; }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
     .card-hover:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
+    
     .btn-primary {
       background-color: var(--color-primary);
       color: white;
       transition: all 0.3s ease;
     }
+    
     .btn-primary:hover {
       background-color: var(--color-primary-dark);
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(42, 125, 46, 0.2);
     }
+    
     .btn-secondary {
       background-color: white;
       color: var(--color-primary);
       border: 1px solid var(--color-primary);
       transition: all 0.3s ease;
     }
+    
     .btn-secondary:hover {
       background-color: var(--color-light);
       transform: translateY(-2px);
     }
-    .section-padding { padding: 5rem 0; }
-    .text-primary { color: var(--color-primary); }
-    .bg-light { background-color: var(--color-light); }
-    .step-number {
-      width: 40px; height: 40px; border-radius: 50%;
-      background-color: var(--color-primary); color: white;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: bold; margin-bottom: 1rem;
+    
+    .section-padding {
+      padding: 5rem 0;
     }
-    .leaflet-popup-content-wrapper { border-radius: 8px; }
-    .hand-drawn-border { position: relative; }
+    
+    .text-primary {
+      color: var(--color-primary);
+    }
+    
+    .bg-light {
+      background-color: var(--color-light);
+    }
+    
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--color-primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    
+    .leaflet-popup-content-wrapper {
+      border-radius: 8px;
+    }
+    
+    .hand-drawn-border {
+      position: relative;
+    }
+    
     .hand-drawn-border:after {
       content: "";
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       border-radius: 12px;
       border: 2px solid var(--color-primary);
       opacity: 0.1;
       pointer-events: none;
     }
+
+    /* Dark mode styles */
     .dark .hand-drawn-border:after {
       border-color: #2A7D2E;
       opacity: 0.2;
     }
+
     .dark .card-hover:hover {
       box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    /* Tab styles */
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .tab-button {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .tab-button.active {
+      background-color: var(--color-primary);
+      color: white;
+    }
+    
+    .tab-button:not(.active) {
+      background-color: transparent;
+      color: var(--color-dark);
+      border: 1px solid var(--color-primary);
+    }
+    
+    .dark .tab-button:not(.active) {
+      color: var(--color-light);
+    }
+    
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 50;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background-color: white;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .dark .modal-content {
+      background-color: #1e293b;
+    }
+    
+    /* Supply chain timeline */
+    .timeline {
+      position: relative;
+      padding-left: 3rem;
+      margin: 2rem 0;
+    }
+    
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 0;
+      height: 100%;
+      width: 2px;
+      background-color: var(--color-primary);
+    }
+    
+    .timeline-step {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+    
+    .timeline-step::before {
+      content: '';
+      position: absolute;
+      left: -3rem;
+      top: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: var(--color-primary);
+      border: 4px solid white;
+    }
+    
+    .dark .timeline-step::before {
+      border-color: #1e293b;
+    }
+    
+    /* QR Scanner */
+    #qr-scanner {
+      width: 100%;
+      height: 300px;
+      border: 2px dashed var(--color-primary);
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin: 1rem 0;
+    }
+    
+    /* Dashboard specific */
+    .stat-card {
+      border-radius: 12px;
+      padding: 1.5rem;
+      background-color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .dark .stat-card {
+      background-color: #1e293b;
+    }
+    
+    .dashboard-container {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      min-height: 100vh;
+    }
+    
+    .dashboard-sidebar {
+      background-color: var(--color-primary);
+      color: white;
+      padding: 1.5rem;
+    }
+    
+    .dashboard-main {
+      padding: 2rem;
+      background-color: #f3f4f6;
+    }
+    
+    .dark .dashboard-main {
+      background-color: #111827;
+    }
+
+    /* User type tabs */
+    .user-type-tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 1rem;
+    }
+    
+    .dark .user-type-tabs {
+      border-bottom-color: #374151;
     }
   </style>
 </head>
 <body class="bg-light dark:bg-dark text-dark dark:text-light transition-colors duration-300">
+
   <!-- NAVBAR -->
   <header class="sticky top-0 z-40 bg-white/90 dark:bg-dark/90 border-b border-gray-200 dark:border-gray-700 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
@@ -123,350 +331,482 @@
       </a>
       <nav class="hidden md:flex items-center gap-6 text-sm">
         <a href="#how" class="hover:text-primary dark:hover:text-secondary transition-colors">How it works</a>
-        <a href="#map" class="hover:text-primary dark:hover:text-secondary transition-colors">Buyers near you</a>
-        <a href="#browse" class="hover:text-primary dark:hover:text-secondary transition-colors">Search buyers</a>
-        <a href="#register" class="px-4 py-2 rounded-lg btn-primary">Register</a>
+        <a href="#map" class="hover:text-primary dark:hover:text-secondary transition-colors">Sellers near you</a>
+        <a href="#browse" class="hover:text-primary dark:hover:text-secondary transition-colors">Search sellers</a>
+        <a href="#supply-chain" class="hover:text-primary dark:hover:text-secondary transition-colors">Track Produce</a>
+        <button id="buyerLoginBtn" class="px-4 py-2 rounded-lg btn-primary">Buyer Login</button>
+        <a href="#register" class="px-4 py-2 rounded-lg btn-secondary">Register</a>
       </nav>
       <div class="flex items-center gap-3">
         <button id="darkModeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
           <i class="fas fa-moon dark:hidden"></i>
           <i class="fas fa-sun hidden dark:inline"></i>
         </button>
-        <a href="#register" class="md:hidden px-3 py-2 rounded-lg btn-primary text-sm">Register</a>
+        <button id="mobileBuyerLoginBtn" class="md:hidden px-3 py-2 rounded-lg btn-primary text-sm">Buyer Login</button>
       </div>
     </div>
   </header>
-  <!-- HERO -->
-  <section id="hero" class="relative">
-    <div class="absolute inset-0 -z-10">
-      <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" alt="Fresh produce" class="w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/60"></div>
-    </div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-28 lg:py-36 text-white">
-      <h1 class="text-3xl sm:text-5xl font-bold leading-tight max-w-3xl">Sell smarter. Earn better. Connect directly with local buyers.</h1>
-      <p class="mt-4 text-base sm:text-lg max-w-2xl text-white/90">List your produce, compare offers, and deliver to nearby restaurants, retail stores, and markets—without middlemen.</p>
-      <div class="mt-8 flex flex-wrap gap-4">
-        <a href="#register" class="px-6 py-3 rounded-lg btn-primary font-semibold flex items-center gap-2">
-          <i class="fas fa-user-plus"></i> Register Now
-        </a>
-        <a href="#browse" class="px-6 py-3 rounded-lg btn-secondary font-semibold flex items-center gap-2">
-          <i class="fas fa-search"></i> Find Local Buyers
-        </a>
+
+  <!-- User Type Selection -->
+  <div class="user-type-tabs">
+    <button id="farmerTab" class="tab-button active mr-4">I'm a Farmer</button>
+    <button id="buyerTab" class="tab-button">I'm a Buyer</button>
+  </div>
+
+  <!-- FARMER CONTENT (DEFAULT) -->
+  <div id="farmerContent" class="tab-content active">
+    <!-- HERO -->
+    <section id="hero" class="relative">
+      <div class="absolute inset-0 -z-10">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" alt="Fresh produce" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/60"></div>
       </div>
-    </div>
-  </section>
-  <!-- HOW IT WORKS -->
-  <section id="how" class="section-padding bg-white dark:bg-gray-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-3xl mx-auto mb-12">
-        <h2 class="text-3xl sm:text-4xl font-bold">How it works</h2>
-        <p class="text-primary dark:text-secondary mt-2">A simple 4-step process from listing to delivery.</p>
-      </div>
-      <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
-          <div class="step-number">1</div>
-          <div class="text-primary dark:text-secondary font-semibold">Create your listing</div>
-          <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Tell us your produce, quantity, and location. It takes less than a minute.</p>
-        </div>
-        <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
-          <div class="step-number">2</div>
-          <div class="text-primary dark:text-secondary font-semibold">Get matched</div>
-          <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">See nearby buyers actively looking for your produce and their average offers.</p>
-        </div>
-        <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
-          <div class="step-number">3</div>
-          <div class="text-primary dark:text-secondary font-semibold">Negotiate & confirm</div>
-          <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Chat, confirm price & schedule pickup or delivery directly with buyers.</p>
-        </div>
-        <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
-          <div class="step-number">4</div>
-          <div class="text-primary dark:text-secondary font-semibold">Deliver & get paid</div>
-          <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Complete delivery and receive payment through your preferred method.</p>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-28 lg:py-36 text-white">
+        <h1 class="text-3xl sm:text-5xl font-bold leading-tight max-w-3xl">Sell smarter. Earn better. Connect directly with local buyers.</h1>
+        <p class="mt-4 text-base sm:text-lg max-w-2xl text-white/90">List your produce, compare offers, and deliver to nearby restaurants, retail stores, and markets—without middlemen.</p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href="#register" class="px-6 py-3 rounded-lg btn-primary font-semibold flex items-center gap-2">
+            <i class="fas fa-user-plus"></i> Register Now
+          </a>
+          <a href="#browse" class="px-6 py-3 rounded-lg btn-secondary font-semibold flex items-center gap-2">
+            <i class="fas fa-search"></i> Find Local Buyers
+          </a>
         </div>
       </div>
-    </div>
-  </section>
-  <!-- MAP -->
-  <section id="map" class="py-16 bg-white dark:bg-gray-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col lg:flex-row gap-10 items-start">
-        <!-- Map container -->
-        <div class="flex-1">
-          <h2 class="text-3xl font-bold mb-2">Buyers near you</h2>
-          <p class="text-neutral-600 dark:text-gray-300">Explore buyers within your radius using the interactive map below.</p>
-          <div id="mapContainer" class="mt-6"></div>
-          <div id="locationStatus" class="location-status text-sm text-neutral-600 dark:text-gray-300 mt-3">
-            Click "Use My Location" to see buyers near you.
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how" class="section-padding bg-white dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold">How it works</h2>
+          <p class="text-primary dark:text-secondary mt-2">A simple 4-step process from listing to delivery.</p>
+        </div>
+        <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">1</div>
+            <div class="text-primary dark:text-secondary font-semibold">Create your listing</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Tell us your produce, quantity, and location. It takes less than a minute.</p>
+          </div>
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">2</div>
+            <div class="text-primary dark:text-secondary font-semibold">Get matched</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">See nearby buyers actively looking for your produce and their average offers.</p>
+          </div>
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">3</div>
+            <div class="text-primary dark:text-secondary font-semibold">Negotiate & confirm</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Chat, confirm price & schedule pickup or delivery directly with buyers.</p>
+          </div>
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">4</div>
+            <div class="text-primary dark:text-secondary font-semibold">Deliver & get paid</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Complete delivery and receive payment through your preferred method.</p>
           </div>
         </div>
-        <!-- Search controls -->
-        <div class="w-full lg:max-w-sm p-6 rounded-xl bg-light dark:bg-gray-800 hand-drawn-border">
-          <h3 class="font-semibold text-lg flex items-center gap-2 text-primary dark:text-secondary">
-            <i class="fas fa-map-marker-alt"></i> Your location
-          </h3>
-          <p class="text-sm text-neutral-600 dark:text-gray-300 mt-1">Allow location access to find buyers near you.</p>
-          <div class="mt-5 space-y-4">
-            <button id="locateMe" class="w-full px-4 py-2 rounded-lg btn-primary flex items-center justify-center gap-2">
-              <i class="fas fa-location-arrow"></i> Use My Location
-            </button>
-            <div class="text-center text-sm text-neutral-500 dark:text-gray-400">or</div>
-            <input id="locationInput" type="text" placeholder="Enter your location manually" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
-            <div>
-              <label class="block text-sm font-medium mb-1 dark:text-gray-300">Search Radius: <span id="distanceLabel">15</span> km</label>
-              <input id="distanceRangeMap" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
+      </div>
+    </section>
+
+    <!-- MAP -->
+    <section id="map" class="py-16 bg-white dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row gap-10 items-start">
+          <!-- Map container -->
+          <div class="flex-1">
+            <h2 class="text-3xl font-bold mb-2">Buyers near you</h2>
+            <p class="text-neutral-600 dark:text-gray-300">Explore buyers within your radius using the interactive map below.</p>
+            <div id="mapContainer" class="mt-6"></div>
+            <div id="locationStatus" class="location-status text-sm text-neutral-600 dark:text-gray-300 mt-3">
+              Click "Use My Location" to see buyers near you.
             </div>
-            <p class="text-xs text-neutral-500 dark:text-gray-400">This updates the buyers list based on your location.</p>
+          </div>
+          <!-- Search controls -->
+          <div class="w-full lg:max-w-sm p-6 rounded-xl bg-light dark:bg-gray-800 hand-drawn-border">
+            <h3 class="font-semibold text-lg flex items-center gap-2 text-primary dark:text-secondary">
+              <i class="fas fa-map-marker-alt"></i> Your location
+            </h3>
+            <p class="text-sm text-neutral-600 dark:text-gray-300 mt-1">Allow location access to find buyers near you.</p>
+            <div class="mt-5 space-y-4">
+              <button id="locateMe" class="w-full px-4 py-2 rounded-lg btn-primary flex items-center justify-center gap-2">
+                <i class="fas fa-location-arrow"></i> Use My Location
+              </button>
+              <div class="text-center text-sm text-neutral-500 dark:text-gray-400">or</div>
+              <input id="locationInput" type="text" placeholder="Enter your location manually" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
+              <div>
+                <label class="block text-sm font-medium mb-1 dark:text-gray-300">Search Radius: <span id="distanceLabel">15</span> km</label>
+                <input id="distanceRangeMap" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
+              </div>
+              <p class="text-xs text-neutral-500 dark:text-gray-400">This updates the buyers list based on your location.</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-  <!-- SEARCH + LISTINGS -->
-  <section id="browse" class="section-padding bg-light dark:bg-dark">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-        <div>
-          <h2 class="text-3xl font-bold">Find buyers for your produce</h2>
-          <p class="text-neutral-600 dark:text-gray-300 mt-1">Type to search and refine with filters. Results update instantly.</p>
-        </div>
-        <a href="#register" class="px-5 py-2.5 rounded-lg btn-primary flex items-center gap-2 whitespace-nowrap">
-          <i class="fas fa-plus"></i> List Your Produce
-        </a>
-      </div>
-      <div class="grid md:grid-cols-4 gap-5 mb-6">
-        <div class="md:col-span-2">
-          <label class="text-sm font-medium block mb-1 dark:text-gray-300">Search by produce</label>
-          <div class="relative">
-            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            <input id="searchInput" type="text" placeholder="e.g., tomatoes, kale, eggs" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
+    </section>
+
+    <!-- SEARCH + LISTINGS -->
+    <section id="browse" class="section-padding bg-light dark:bg-dark">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div>
+            <h2 class="text-3xl font-bold">Find buyers for your produce</h2>
+            <p class="text-neutral-600 dark:text-gray-300 mt-1">Type to search and refine with filters. Results update instantly.</p>
           </div>
+          <a href="#register" class="px-5 py-2.5 rounded-lg btn-primary flex items-center gap-2 whitespace-nowrap">
+            <i class="fas fa-plus"></i> List Your Produce
+          </a>
         </div>
-        <div>
-          <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Type</label>
-          <div class="relative">
-            <i class="fas fa-tag absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            <select id="produceTypeFilter" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
-              <option value="">All types</option>
-              <optgroup label="Cereals">
-                <option value="Barley (जौ)">Barley (जौ)</option>
-                <option value="Buckwheat (Kuttu) (कुट्टू)">Buckwheat (Kuttu) (कुट्टू)</option>
-                <option value="Foxtail Millet (Kangni) (कंगनी)">Foxtail Millet (Kangni) (कंगनी)</option>
-                <option value="Finger Millet (Ragi) (रागी)">Finger Millet (Ragi) (रागी)</option>
-                <option value="Maize (मक्का)">Maize (मक्का)</option>
-                <option value="Pearl Millet (Bajra) (बाजरा)">Pearl Millet (Bajra) (बाजरा)</option>
-                <option value="Rice (चावल)">Rice (चावल)</option>
-                <option value="Sorghum (Jowar) (ज्वार)">Sorghum (Jowar) (ज्वार)</option>
-              </optgroup>
-              <optgroup label="Pulses">
-                <option value="Chana Dal (चना दाल)">Chana Dal (चना दाल)</option>
-                <option value="Kabuli Chana (काबुली चना / छोले)">Kabuli Chana (काबुली चना / छोले)</option>
-                <option value="Kala Chana (काला चना)">Kala Chana (काला चना)</option>
-                <option value="Kulthi (कुलथी / Horse Gram)">Kulthi (कुलथी / Horse Gram)</option>
-                <option value="Lobia (लोबिया / Black-eyed Peas)">Lobia (लोबिया / Black-eyed Peas)</option>
-                <option value="Masoor Dal (लाल मसूर दाल)">Masoor Dal (लाल मसूर दाल)</option>
-                <option value="Moth Dal (मठ दाल)">Moth Dal (मठ दाल)</option>
-                <option value="Moong Dal (मूंग दाल)">Moong Dal (मूंग दाल)</option>
-                <option value="Rajma (राजमा / Kidney Beans)">Rajma (राजमा / Kidney Beans)</option>
-                <option value="Sukhe Hare Matar (सूखे हरे मटर)">Sukhe Hare Matar (सूखे हरे मटर)</option>
-                <option value="Sukhe Safed Matar (सूखे सफेद मटर)">Sukhe Safed Matar (सूखे सफेद मटर)</option>
-                <option value="Toor Dal (अरहर)">Toor Dal (अरहर)</option>
-                <option value="Urad Dal (उड़द दाल)">Urad Dal (उड़द दाल)</option>
-              </optgroup>
-              <optgroup label="Vegetables">
-                <option value="Bitter Gourd (करेला)">Bitter Gourd (करेला)</option>
-                <option value="Bottle Gourd (लौकी)">Bottle Gourd (लौकी)</option>
-                <option value="Brinjal (बैंगन)">Brinjal (बैंगन)</option>
-                <option value="Cabbage (पत्ता गोभी)">Cabbage (पत्ता गोभी)</option>
-                <option value="Carrot (गाजर)">Carrot (गाजर)</option>
-                <option value="Cauliflower (फूलगोभी)">Cauliflower (फूलगोभी)</option>
-                <option value="Chili (मिर्च)">Chili (मिर्च)</option>
-                <option value="Cucumber (खीरा)">Cucumber (खीरा)</option>
-                <option value="Garlic (लहसुन)">Garlic (लहसुन)</option>
-                <option value="Okra (भिंडी)">Okra (भिंडी)</option>
-                <option value="Onion (प्याज)">Onion (प्याज)</option>
-                <option value="Peas (मटर)">Peas (मटर)</option>
-                <option value="Potato (आलू)">Potato (आलू)</option>
-                <option value="Pumpkin (कद्दू)">Pumpkin (कद्दू)</option>
-                <option value="Ridge Gourd (तोरई)">Ridge Gourd (तोरई)</option>
-                <option value="Spinach (पालक)">Spinach (पालक)</option>
-                <option value="Tomato (टमाटर)">Tomato (टमाटर)</option>
-              </optgroup>
-              <optgroup label="Fruits">
-                <option value="Apple (सेब)">Apple (सेब)</option>
-                <option value="Avocado (एवोकाडो)">Avocado (एवोकाडो)</option>
-                <option value="Banana (केला)">Banana (केला)</option>
-                <option value="Grapes (अंगूर)">Grapes (अंगूर)</option>
-                <option value="Guava (अमरुद)">Guava (अमरुद)</option>
-                <option value="Jackfruit (कटहल)">Jackfruit (कटहल)</option>
-                <option value="Lemon (नींबू)">Lemon (नींबू)</option>
-                <option value="Lime (कागदी नींबू)">Lime (कागदी नींबू)</option>
-                <option value="Mango (आम)">Mango (आम)</option>
-                <option value="Muskmelon (खरबूजा)">Muskmelon (खरबूजा)</option>
-                <option value="Orange (संतरा)">Orange (संतरा)</option>
-                <option value="Papaya (पपीता)">Papaya (पपीता)</option>
-                <option value="Pineapple (अनानास)">Pineapple (अनानास)</option>
-                <option value="Pomegranate (अनार)">Pomegranate (अनार)</option>
-                <option value="Watermelon (तरबूज)">Watermelon (तरबूज)</option>
-              </optgroup>
-              <optgroup label="Plantation & Fiber Crops">
-                <option value="Coffee (कॉफ़ी)">Coffee (कॉफ़ी)</option>
-                <option value="Cotton (कपास)">Cotton (कपास)</option>
-                <option value="Flax (Alsi) (अलसी)">Flax (Alsi) (अलसी)</option>
-                <option value="Jute (जूट)">Jute (जूट)</option>
-                <option value="Rubber (रबर)">Rubber (रबर)</option>
-                <option value="Sugarcane (गन्ना)">Sugarcane (गन्ना)</option>
-                <option value="Tea (चाय)">Tea (चाय)</option>
-              </optgroup>
-            </select>
+        <div class="grid md:grid-cols-4 gap-5 mb-6">
+          <div class="md:col-span-2">
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Search by produce</label>
+            <div class="relative">
+              <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input id="searchInput" type="text" placeholder="e.g., tomatoes, wheat, eggs" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
+            </div>
           </div>
-        </div>
-        <div>
-          <label class="text-sm font-medium block mb-1 dark:text-gray-300">Max Distance: <span id="distanceValue">15</span> km</label>
-          <input id="distanceRange" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
-        </div>
-      </div>
-      <div class="text-sm text-neutral-600 dark:text-gray-300 mb-6"><span id="resultsCount">0</span> buyers match your search.</div>
-      <div id="buyersGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-    </div>
-  </section>
-  <!-- REGISTRATION section with pulse list dropdown -->
-  <section id="register" class="py-16 bg-white dark:bg-gray-900">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid lg:grid-cols-2 gap-10 items-start">
-      <div>
-        <h2 class="text-3xl font-bold">Ready to earn better?</h2>
-        <p class="text-neutral-600 dark:text-gray-300 mt-2">Create a quick listing so buyers can reach out to you.</p>
-        <div class="mt-6 p-6 bg-light dark:bg-gray-800 rounded-xl hand-drawn-border">
-          <h3 class="font-semibold text-lg flex items-center gap-2 text-primary dark:text-secondary">
-            <i class="fas fa-info-circle"></i> Why register with us?
-          </h3>
-          <ul class="mt-3 space-y-2 text-sm">
-            <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> No middlemen - keep more profit</li>
-            <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> Connect directly with verified buyers</li>
-            <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> Get fair prices for your produce</li>
-          </ul>
-        </div>
-      </div>
-      <form id="listingForm" class="p-6 rounded-xl bg-light dark:bg-gray-800 space-y-5 hand-drawn-border" onsubmit="return false;">
-        <div>
-          <label class="text-sm font-medium block mb-1 dark:text-gray-300">Your Name</label>
-          <input required type="text" name="name" placeholder="e.g., Suman Yadav" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
-        </div>
-        <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Type</label>
-            <select required name="produce" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
-              <option value="">Select Produce</option>
-              <optgroup label="Cereals">
-                <option value="Barley (जौ)">Barley (जौ)</option>
-                <option value="Buckwheat (Kuttu) (कुट्टू)">Buckwheat (Kuttu) (कुट्टू)</option>
-                <option value="Foxtail Millet (Kangni) (कंगनी)">Foxtail Millet (Kangni) (कंगनी)</option>
-                <option value="Finger Millet (Ragi) (रागी)">Finger Millet (Ragi) (रागी)</option>
-                <option value="Maize (मक्का)">Maize (मक्का)</option>
-                <option value="Pearl Millet (Bajra) (बाजरा)">Pearl Millet (Bajra) (बाजरा)</option>
-                <option value="Rice (चावल)">Rice (चावल)</option>
-                <option value="Sorghum (Jowar) (ज्वार)">Sorghum (Jowar) (ज्वार)</option>
-              </optgroup>
-              <optgroup label="Pulses">
-                <option value="Chana Dal (चना दाल)">Chana Dal (चना दाल)</option>
-                <option value="Kabuli Chana (काबुली चना / छोले)">Kabuli Chana (काबुली चना / छोले)</option>
-                <option value="Kala Chana (काला चना)">Kala Chana (काला चना)</option>
-                <option value="Kulthi (कुलथी / Horse Gram)">Kulthi (कुलथी / Horse Gram)</option>
-                <option value="Lobia (लोबिया / Black-eyed Peas)">Lobia (लोबिया / Black-eyed Peas)</option>
-                <option value="Masoor Dal (लाल मसूर दाल)">Masoor Dal (लाल मसूर दाल)</option>
-                <option value="Moth Dal (मठ दाल)">Moth Dal (मठ दाल)</option>
-                <option value="Moong Dal (मूंग दाल)">Moong Dal (मूंग दाल)</option>
-                <option value="Rajma (राजमा / Kidney Beans)">Rajma (राजमा / Kidney Beans)</option>
-                <option value="Sukhe Hare Matar (सूखे हरे मटर)">Sukhe Hare Matar (सूखे हरे मटर)</option>
-                <option value="Sukhe Safed Matar (सूखे सफेद मटर)">Sukhe Safed Matar (सूखे सफेद मटर)</option>
-                <option value="Toor Dal (अरहर)">Toor Dal (अरहर)</option>
-                <option value="Urad Dal (उड़द दाल)">Urad Dal (उड़द दाल)</option>
-              </optgroup>
-              <optgroup label="Vegetables">
-                <option value="Bitter Gourd (करेला)">Bitter Gourd (करेला)</option>
-                <option value="Bottle Gourd (लौकी)">Bottle Gourd (लौकी)</option>
-                <option value="Brinjal (बैंगन)">Brinjal (बैंगन)</option>
-                <option value="Cabbage (पत्ता गोभी)">Cabbage (पत्ता गोभी)</option>
-                <option value="Carrot (गाजर)">Carrot (गाजर)</option>
-                <option value="Cauliflower (फूलगोभी)">Cauliflower (फूलगोभी)</option>
-                <option value="Chili (मिर्च)">Chili (मिर्च)</option>
-                <option value="Cucumber (खीरा)">Cucumber (खीरा)</option>
-                <option value="Garlic (लहसुन)">Garlic (लहसुन)</option>
-                <option value="Okra (भिंडी)">Okra (भिंडी)</option>
-                <option value="Onion (प्याज)">Onion (प्याज)</option>
-                <option value="Peas (मटर)">Peas (मटर)</option>
-                <option value="Potato (आलू)">Potato (आलू)</option>
-                <option value="Pumpkin (कद्दू)">Pumpkin (कद्दू)</option>
-                <option value="Ridge Gourd (तोरई)">Ridge Gourd (तोरई)</option>
-                <option value="Spinach (पालक)">Spinach (पालक)</option>
-                <option value="Tomato (टमाटर)">Tomato (टमाटर)</option>
-              </optgroup>
-              <optgroup label="Fruits">
-                <option value="Apple (सेब)">Apple (सेब)</option>
-                <option value="Avocado (एवोकाडो)">Avocado (एवोकाडो)</option>
-                <option value="Banana (केला)">Banana (केला)</option>
-                <option value="Grapes (अंगूर)">Grapes (अंगूर)</option>
-                <option value="Guava (अमरुद)">Guava (अमरुद)</option>
-                <option value="Jackfruit (कटहल)">Jackfruit (कटहल)</option>
-                <option value="Lemon (नींबू)">Lemon (नींबू)</option>
-                <option value="Lime (कागदी नींबू)">Lime (कागदी नींबू)</option>
-                <option value="Mango (आम)">Mango (आम)</option>
-                <option value="Muskmelon (खरबूजा)">Muskmelon (खरबूजा)</option>
-                <option value="Orange (संतरा)">Orange (संतरा)</option>
-                <option value="Papaya (पपीता)">Papaya (पपीता)</option>
-                <option value="Pineapple (अनानास)">Pineapple (अनानास)</option>
-                <option value="Pomegranate (अनार)">Pomegranate (अनार)</option>
-                <option value="Watermelon (तरबूज)">Watermelon (तरबूज)</option>
-              </optgroup>
-              <optgroup label="Plantation & Fiber Crops">
-                <option value="Coffee (कॉफ़ी)">Coffee (कॉफ़ी)</option>
-                <option value="Cotton (कपास)">Cotton (कपास)</option>
-                <option value="Flax (Alsi) (अलसी)">Flax (Alsi) (अलसी)</option>
-                <option value="Jute (जूट)">Jute (जूट)</option>
-                <option value="Rubber (रबर)">Rubber (रबर)</option>
-                <option value="Sugarcane (गन्ना)">Sugarcane (गन्ना)</option>
-                <option value="Tea (चाय)">Tea (चाय)</option>
-              </optgroup>
-            </select>
+            <div class="relative">
+              <i class="fas fa-tag absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <select id="produceTypeFilter" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+                <option value="">All types</option>
+                <option value="vegetable">Vegetables</option>
+                <option value="fruit">Fruits</option>
+                <option value="grain">Grains</option>
+                <option value="dairy">Dairy</option>
+              </select>
+            </div>
           </div>
           <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Quality</label>
-            <select name="quality" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
-              <option value="">Select Product Grade</option>
-              <option value="Grade A">Grade A</option>
-              <option value="Grade B">Grade B</option>
-              <option value="Grade C">Grade C</option>
-              <option value="Superior">Superior</option>
-              <option value="Standard">Standard</option>
-              <option value="Below Standard">Below Standard</option>
-              
-            </select>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Max Distance: <span id="distanceValue">15</span> km</label>
+            <input id="distanceRange" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Quantity</label>
-            <input required type="number" min="1" name="quantity" placeholder="e.g., 100" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
-          </div>
-          <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Location</label>
-            <input required type="text" name="location" placeholder="e.g., Ghaziabad" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
-          </div>
-        </div>
-        <button id="submitListing" class="w-full px-4 py-2.5 rounded-lg btn-primary flex items-center justify-center gap-2">
-          <i class="fas fa-paper-plane"></i> Submit Listing (Demo)
-        </button>
-        <p id="formStatus" class="text-sm text-primary dark:text-secondary hidden py-2 px-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-          <i class="fas fa-check-circle mr-2"></i> Thanks! Your demo listing is noted locally.
-        </p>
-      </form>
-    </div>
-  </div>
-</section>
+        <div class="text-sm text-neutral-600 dark:text-gray-300 mb-6"><span id="resultsCount">0</span> buyers match your search.</div>
+        <div id="buyersGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </div>
+    </section>
 
-    
-  </section>
-  <!-- Footer -->
+    <!-- SUPPLY CHAIN TRACKING -->
+    <section id="supply-chain" class="py-16 bg-white dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold mb-2">Track Your Produce Journey</h2>
+        <p class="text-neutral-600 dark:text-gray-300 mb-8">See how your produce travels from farm to consumer with full transparency.</p>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+          <div>
+            <h3 class="text-xl font-semibold mb-4 flex items-center gap-2 text-primary dark:text-secondary">
+              <i class="fas fa-qrcode"></i> Scan QR Code
+            </h3>
+            <div id="qr-scanner" class="mb-4">
+              <i class="fas fa-camera text-4xl text-gray-400 mb-2"></i>
+              <p class="text-gray-500">Click to activate QR scanner</p>
+            </div>
+            <p class="text-sm text-neutral-500 dark:text-gray-400">Scan the QR code on your produce to view its complete journey from farm to market.</p>
+          </div>
+          
+          <div>
+            <h3 class="text-xl font-semibold mb-4 flex items-center gap-2 text-primary dark:text-secondary">
+              <i class="fas fa-map-marked-alt"></i> Supply Chain Journey
+            </h3>
+            <div class="bg-light dark:bg-gray-800 p-6 rounded-xl hand-drawn-border">
+              <div class="timeline">
+                <div class="timeline-step">
+                  <h4 class="font-semibold">Farm Harvest</h4>
+                  <p class="text-sm text-neutral-600 dark:text-gray-300">October 10, 2023 - 9:00 AM</p>
+                  <p class="text-sm mt-1">Organic tomatoes harvested at Green Valley Farms</p>
+                </div>
+                <div class="timeline-step">
+                  <h4 class="font-semibold">Quality Check</h4>
+                  <p class="text-sm text-neutral-600 dark:text-gray-300">October 10, 2023 - 11:30 AM</p>
+                  <p class="text-sm mt-1">Passed quality inspection with 98% grade A produce</p>
+                </div>
+                <div class="timeline-step">
+                  <h4 class="font-semibold">Packaging</h4>
+                  <p class="text-sm text-neutral-600 dark:text-gray-300">October 10, 2023 - 2:15 PM</p>
+                  <p class="text-sm mt-1">Packaged in eco-friendly containers with QR code labels</p>
+                </div>
+                <div class="timeline-step">
+                  <h4 class="font-semibold">Transportation</h4>
+                  <p class="text-sm text-neutral-600 dark:text-gray-300">October 11, 2023 - 8:00 AM</p>
+                  <p class="text-sm mt-1">Shipped via refrigerated transport to distribution center</p>
+                </div>
+                <div class="timeline-step">
+                  <h4 class="font-semibold">Store Delivery</h4>
+                  <p class="text-sm text-neutral-600 dark:text-gray-300">October 12, 2023 - 10:00 AM</p>
+                  <p class="text-sm mt-1">Delivered to City Fresh Market for consumer purchase</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REGISTRATION -->
+    <section id="register" class="py-16 bg-white dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-10 items-start">
+          <div>
+            <h2 class="text-3xl font-bold">Ready to earn better?</h2>
+            <p class="text-neutral-600 dark:text-gray-300 mt-2">Create a quick listing so buyers can reach out to you.</p>
+            <div class="mt-6 p-6 bg-light dark:bg-gray-800 rounded-xl hand-drawn-border">
+              <h3 class="font-semibold text-lg flex items-center gap-2 text-primary dark:text-secondary">
+                <i class="fas fa-info-circle"></i> Why register with us?
+              </h3>
+              <ul class="mt-3 space-y-2 text-sm">
+                <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> <span>No middlemen - keep more profit</span></li>
+                <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> <span>Connect directly with verified buyers</span></li>
+                <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> <span>Get fair prices for your produce</span></li>
+              </ul>
+            </div>
+          </div>
+          <form id="listingForm" class="p-6 rounded-xl bg-light dark:bg-gray-800 space-y-5 hand-drawn-border" onsubmit="return false;">
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Your Name</label>
+              <input required type="text" name="name" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., Suman Yadav" />
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Type</label>
+              <select required name="produceType" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+                <option value="">Select type</option>
+                <option value="vegetable">Vegetables</option>
+                <option value="fruit">Fruits</option>
+                <option value="grain">Grains</option>
+                <option value="dairy">Dairy</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Name</label>
+              <input required type="text" name="produce" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., Organic Wheat, Tomatoes" />
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="text-sm font-medium block mb-1 dark:text-gray-300">Quantity</label>
+                <input required type="number" min="1" name="quantity" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., 100" />
+              </div>
+              <div>
+                <label class="text-sm font-medium block mb-1 dark:text-gray-300">Unit</label>
+                <select name="unit" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+                  <option value="kg">kg</option>
+                  <option value="quintal">Quintal</option>
+                  <option value="ton">Ton</option>
+                  <option value="piece">Piece</option>
+                  <option value="dozen">Dozen</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Location</label>
+              <input required type="text" name="location" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., Ghaziabad" />
+            </div>
+            <button id="submitListing" class="w-full px-4 py-2.5 rounded-lg btn-primary flex items-center justify-center gap-2">
+              <i class="fas fa-paper-plane"></i> Submit Listing (Demo)
+            </button>
+            <p id="formStatus" class="text-sm text-primary dark:text-secondary hidden py-2 px-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <i class="fas fa-check-circle mr-2"></i> Thanks! Your demo listing is noted locally.
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- BUYER CONTENT (HIDDEN BY DEFAULT) -->
+  <div id="buyerContent" class="tab-content">
+    <!-- BUYER HERO -->
+    <section id="buyer-hero" class="relative">
+      <div class="absolute inset-0 -z-10">
+        <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=1600&auto=format&fit=crop" alt="Fresh produce market" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/60"></div>
+      </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-28 lg:py-36 text-white">
+        <h1 class="text-3xl sm:text-5xl font-bold leading-tight max-w-3xl">Source fresh produce directly from local farmers</h1>
+        <p class="mt-4 text-base sm:text-lg max-w-2xl text-white/90">Find quality produce, negotiate fair prices, and build direct relationships with farmers in your area.</p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href="#buyer-register" class="px-6 py-3 rounded-lg btn-primary font-semibold flex items-center gap-2">
+            <i class="fas fa-user-plus"></i> Register as Buyer
+          </a>
+          <a href="#buyer-browse" class="px-6 py-3 rounded-lg btn-secondary font-semibold flex items-center gap-2">
+            <i class="fas fa-search"></i> Browse Farmers
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS FOR BUYERS -->
+    <section class="section-padding bg-white dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold">How it works for buyers</h2>
+          <p class="text-primary dark:text-secondary mt-2">A simple process to source directly from farmers.</p>
+        </div>
+        <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">1</div>
+            <div class="text-primary dark:text-secondary font-semibold">Search farmers</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Find farmers near you with the produce you need.</p>
+          </div>
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">2</div>
+            <div class="text-primary dark:text-secondary font-semibold">Compare offers</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">View quality, prices, and availability from multiple farmers.</p>
+          </div>
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">3</div>
+            <div class="text-primary dark:text-secondary font-semibold">Place your order</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Specify quantity, desired price, and delivery preferences.</p>
+          </div>
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">4</div>
+            <div class="text-primary dark:text-secondary font-semibold">Receive fresh produce</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Get quality produce directly from farm to your business.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BUYER MAP -->
+    <section class="py-16 bg-white dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row gap-10 items-start">
+          <!-- Map container -->
+          <div class="flex-1">
+            <h2 class="text-3xl font-bold mb-2">Farmers near you</h2>
+            <p class="text-neutral-600 dark:text-gray-300">Explore farmers within your radius using the interactive map below.</p>
+            <div id="buyerMapContainer" class="mt-6"></div>
+            <div id="buyerLocationStatus" class="location-status text-sm text-neutral-600 dark:text-gray-300 mt-3">
+              Click "Use My Location" to see farmers near you.
+            </div>
+          </div>
+          <!-- Search controls -->
+          <div class="w-full lg:max-w-sm p-6 rounded-xl bg-light dark:bg-gray-800 hand-drawn-border">
+            <h3 class="font-semibold text-lg flex items-center gap-2 text-primary dark:text-secondary">
+              <i class="fas fa-map-marker-alt"></i> Your location
+            </h3>
+            <p class="text-sm text-neutral-600 dark:text-gray-300 mt-1">Allow location access to find farmers near you.</p>
+            <div class="mt-5 space-y-4">
+              <button id="buyerLocateMe" class="w-full px-4 py-2 rounded-lg btn-primary flex items-center justify-center gap-2">
+                <i class="fas fa-location-arrow"></i> Use My Location
+              </button>
+              <div class="text-center text-sm text-neutral-500 dark:text-gray-400">or</div>
+              <input id="buyerLocationInput" type="text" placeholder="Enter your location manually" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
+              <div>
+                <label class="block text-sm font-medium mb-1 dark:text-gray-300">Search Radius: <span id="buyerDistanceLabel">15</span> km</label>
+                <input id="buyerDistanceRangeMap" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
+              </div>
+              <p class="text-xs text-neutral-500 dark:text-gray-400">This updates the farmers list based on your location.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BUYER SEARCH + LISTINGS -->
+    <section id="buyer-browse" class="section-padding bg-light dark:bg-dark">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div>
+            <h2 class="text-3xl font-bold">Find farmers with the produce you need</h2>
+            <p class="text-neutral-600 dark:text-gray-300 mt-1">Type to search and refine with filters. Results update instantly.</p>
+          </div>
+          <button id="openOrderModal" class="px-5 py-2.5 rounded-lg btn-primary flex items-center gap-2 whitespace-nowrap">
+            <i class="fas fa-plus"></i> Place Order Request
+          </button>
+        </div>
+        <div class="grid md:grid-cols-4 gap-5 mb-6">
+          <div class="md:col-span-2">
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Search by produce</label>
+            <div class="relative">
+              <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input id="buyerSearchInput" type="text" placeholder="e.g., tomatoes, wheat, eggs" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Type</label>
+            <div class="relative">
+              <i class="fas fa-tag absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <select id="buyerProduceTypeFilter" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+                <option value="">All types</option>
+                <option value="vegetable">Vegetables</option>
+                <option value="fruit">Fruits</option>
+                <option value="grain">Grains</option>
+                <option value="dairy">Dairy</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Max Distance: <span id="buyerDistanceValue">15</span> km</label>
+            <input id="buyerDistanceRange" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
+          </div>
+        </div>
+        <div class="text-sm text-neutral-600 dark:text-gray-300 mb-6"><span id="buyerResultsCount">0</span> farmers match your search.</div>
+        <div id="farmersGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </div>
+    </section>
+
+    <!-- BUYER REGISTRATION -->
+    <section id="buyer-register" class="py-16 bg-white dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-10 items-start">
+          <div>
+            <h2 class="text-3xl font-bold">Ready to source directly?</h2>
+            <p class="text-neutral-600 dark:text-gray-300 mt-2">Register as a buyer to connect with local farmers.</p>
+            <div class="mt-6 p-6 bg-light dark:bg-gray-800 rounded-xl hand-drawn-border">
+              <h3 class="font-semibold text-lg flex items-center gap-2 text-primary dark:text-secondary">
+                <i class="fas fa-info-circle"></i> Benefits for buyers
+              </h3>
+              <ul class="mt-3 space-y-2 text-sm">
+                <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> <span>Fresh, quality produce directly from source</span></li>
+                <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> <span>Competitive pricing without middlemen</span></li>
+                <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> <span>Build long-term relationships with farmers</span></li>
+              </ul>
+            </div>
+          </div>
+          <form id="buyerRegistrationForm" class="p-6 rounded-xl bg-light dark:bg-gray-800 space-y-5 hand-drawn-border" onsubmit="return false;">
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Business Name</label>
+              <input required type="text" name="businessName" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., City Fresh Market" />
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Your Name</label>
+              <input required type="text" name="name" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., Rajesh Kumar" />
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Email</label>
+              <input required type="email" name="email" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="your.email@example.com" />
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Phone Number</label>
+              <input required type="tel" name="phone" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., 9876543210" />
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Business Type</label>
+              <select required name="businessType" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+                <option value="">Select type</option>
+                <option value="restaurant">Restaurant</option>
+                <option value="retail">Retail Store</option>
+                <option value="market">Market</option>
+                <option value="processor">Processor</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Location</label>
+              <input required type="text" name="location" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., Connaught Place, Delhi" />
+            </div>
+            <button id="submitBuyerRegistration" class="w-full px-4 py-2.5 rounded-lg btn-primary flex items-center justify-center gap-2">
+              <i class="fas fa-paper-plane"></i> Register as Buyer
+            </button>
+            <p id="buyerFormStatus" class="text-sm text-primary dark:text-secondary hidden py-2 px-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <i class="fas fa-check-circle mr-2"></i> Thanks! Your registration is complete.
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- FOOTER -->
   <footer class="py-12 border-t bg-white dark:bg-gray-900 text-center text-neutral-500 dark:text-gray-400 text-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col md:flex-row justify-between items-center gap-6">
@@ -493,79 +833,525 @@
       </div>
     </div>
   </footer>
-  <!-- SCRIPT SECTION -->
+
+  <!-- LOGIN MODAL -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-semibold dark:text-white">Buyer Login</h3>
+          <button id="closeLoginModal" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Email</label>
+            <input type="email" required class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="your.email@example.com">
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Password</label>
+            <input type="password" required class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="Your password">
+          </div>
+          <button type="submit" class="w-full px-4 py-2 rounded-lg btn-primary">Login to Dashboard</button>
+        </form>
+        <p class="text-sm text-center mt-4 text-gray-500 dark:text-gray-400">
+          Demo: Use any credentials to access the demo dashboard
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER MODAL FOR BUYERS -->
+  <div id="orderModal" class="modal">
+    <div class="modal-content">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-semibold dark:text-white">Place Order Request</h3>
+          <button id="closeOrderModal" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="orderForm" class="space-y-4">
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Type</label>
+            <select required name="produceType" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+              <option value="">Select type</option>
+              <option value="vegetable">Vegetables</option>
+              <option value="fruit">Fruits</option>
+              <option value="grain">Grains</option>
+              <option value="dairy">Dairy</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Name</label>
+            <input required type="text" name="produce" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., Organic Tomatoes, Basmati Rice">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Quantity</label>
+              <input required type="number" min="1" name="quantity" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., 100">
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Unit</label>
+              <select name="unit" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+                <option value="kg">kg</option>
+                <option value="quintal">Quintal</option>
+                <option value="ton">Ton</option>
+                <option value="piece">Piece</option>
+                <option value="dozen">Dozen</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Maximum Price (₹ per unit)</label>
+            <input required type="number" min="1" step="0.5" name="maxPrice" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., 30.5">
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Delivery Date</label>
+            <input required type="date" name="deliveryDate" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Additional Notes</label>
+            <textarea name="notes" rows="3" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="Any special requirements or quality specifications"></textarea>
+          </div>
+          <button type="submit" class="w-full px-4 py-2 rounded-lg btn-primary">Submit Order Request</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUYER DASHBOARD (HIDDEN BY DEFAULT) -->
+  <div id="buyerDashboard" class="hidden">
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <div class="dashboard-sidebar">
+        <div class="flex items-center gap-2 mb-8">
+          <span class="inline-block w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+            <i class="fas fa-leaf text-white text-sm"></i>
+          </span>
+          <span class="text-white font-medium">Buyer Dashboard</span>
+        </div>
+        
+        <nav class="space-y-2">
+          <a href="#dashboard-overview" class="block py-2 px-4 rounded-lg bg-white/10 text-white font-medium">
+            <i class="fas fa-chart-pie mr-2"></i> Overview
+          </a>
+          <a href="#dashboard-contacts" class="block py-2 px-4 rounded-lg hover:bg-white/10 text-white transition-colors">
+            <i class="fas fa-users mr-2"></i> Farmer Contacts
+          </a>
+          <a href="#dashboard-orders" class="block py-2 px-4 rounded-lg hover:bg-white/10 text-white transition-colors">
+            <i class="fas fa-shopping-cart mr-2"></i> Orders
+          </a>
+          <a href="#dashboard-analytics" class="block py-2 px-4 rounded-lg hover:bg-white/10 text-white transition-colors">
+            <i class="fas fa-chart-line mr-2"></i> Analytics
+          </a>
+          <a href="#" id="logoutBtn" class="block py-2 px-4 rounded-lg hover:bg-white/10 text-white transition-colors mt-8">
+            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+          </a>
+        </nav>
+      </div>
+      
+      <!-- Main Content -->
+      <div class="dashboard-main">
+        <div class="mb-6">
+          <h1 class="text-2xl font-bold dark:text-white">Buyer Dashboard</h1>
+          <p class="text-neutral-600 dark:text-gray-300">Welcome back! Here's your business overview.</p>
+        </div>
+        
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div class="stat-card">
+            <div class="flex items-center">
+              <div class="p-3 rounded-lg bg-green-100 dark:bg-green-900/30 mr-4">
+                <i class="fas fa-users text-green-600 dark:text-green-400"></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Farmer Contacts</p>
+                <p class="text-xl font-bold dark:text-white">24</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="flex items-center">
+              <div class="p-3 rounded-lg bg-blue-100 dark:bg-blue-900/30 mr-4">
+                <i class="fas fa-shopping-cart text-blue-600 dark:text-blue-400"></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Active Orders</p>
+                <p class="text-xl font-bold dark:text-white">8</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="flex items-center">
+              <div class="p-3 rounded-lg bg-orange-100 dark:bg-orange-900/30 mr-4">
+                <i class="fas fa-truck text-orange-600 dark:text-orange-400"></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Pending Delivery</p>
+                <p class="text-xl font-bold dark:text-white">3</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="flex items-center">
+              <div class="p-3 rounded-lg bg-purple-100 dark:bg-purple-900/30 mr-4">
+                <i class="fas fa-rupee-sign text-purple-600 dark:text-purple-400"></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Monthly Spend</p>
+                <p class="text-xl font-bold dark:text-white">₹82,560</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div class="stat-card">
+            <h3 class="font-semibold mb-4 dark:text-white">Produce Types Ordered</h3>
+            <canvas id="produceChart" height="250"></canvas>
+          </div>
+          
+          <div class="stat-card">
+            <h3 class="font-semibold mb-4 dark:text-white">Monthly Spending Trend</h3>
+            <canvas id="spendingChart" height="250"></canvas>
+          </div>
+        </div>
+        
+        <!-- Farmer Contacts Table -->
+        <div class="stat-card">
+          <h3 class="font-semibold mb-4 dark:text-white">Recent Farmer Contacts</h3>
+          <div class="overflow-x-auto">
+            <table class="min-w-full">
+              <thead>
+                <tr class="border-b border-gray-200 dark:border-gray-700">
+                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Farmer</th>
+                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Produce</th>
+                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
+                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Location</th>
+                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Contact Date</th>
+                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                <tr>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Rajesh Kumar</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Organic Wheat</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">200 kg</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Meerut</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">2023-10-15</td>
+                  <td class="py-3 px-4 whitespace-nowrap">
+                    <span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-100 text-xs rounded-full">Pending</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Suman Yadav</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Fresh Tomatoes</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">50 kg</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Ghaziabad</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">2023-10-14</td>
+                  <td class="py-3 px-4 whitespace-nowrap">
+                    <span class="px-2 py-1 bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-100 text-xs rounded-full">Confirmed</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Amrit Singh</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Basmati Rice</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">500 kg</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Karnal</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">2023-10-13</td>
+                  <td class="py-3 px-4 whitespace-nowrap">
+                    <span class="px-2 py-1 bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-100 text-xs rounded-full">Negotiating</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
   <script>
-    const buyers = [
-      { id: 1, name: "Green Grocery Store", address: "Sector 18, Noida", type: "Retailer", produceWanted: ["Organic Tomatoes","Fresh Kale"], distanceKm: 5, avgPrice: 28, lat: 28.570, lng: 77.320 },
-      { id: 2, name: "City Fresh Restaurant", address: "Connaught Place, Delhi", type: "Restaurant", produceWanted: ["Cherry Tomatoes","Spinach"], distanceKm: 12, avgPrice: 35, lat: 28.633, lng: 77.220 },
-      { id: 3, name: "Farmers Market", address: "Saket, Delhi", type: "Market", produceWanted: ["Apples","Carrots","Potatoes"], distanceKm: 8, avgPrice: 25, lat: 28.527, lng: 77.220 },
-      { id: 4, name: "Organic Foods Retail", address: "Gurgaon Sector 29", type: "Retailer", produceWanted: ["Organic Vegetables","Herbs"], distanceKm: 20, avgPrice: 40, lat: 28.460, lng: 77.080 },
-      { id: 5, name: "Delhi Kitchen", address: "Rajouri Garden", type: "Restaurant", produceWanted: ["Fresh Vegetables","Spices"], distanceKm: 10, avgPrice: 32, lat: 28.650, lng: 77.120 }
+    // Farmers Data
+    const farmers = [
+      { id: 1, name: "Green Valley Farms", address: "Sector 18, Noida", produceAvailable: ["Organic Tomatoes", "Fresh Kale", "Wheat"], distanceKm: 5, price: 28, lat: 28.570, lng: 77.320 },
+      { id: 2, name: "Fresh Harvest Farm", address: "Connaught Place, Delhi", produceAvailable: ["Cherry Tomatoes", "Spinach", "Basmati Rice"], distanceKm: 12, price: 35, lat: 28.633, lng: 77.220 },
+      { id: 3, name: "Organic Oasis", address: "Saket, Delhi", produceAvailable: ["Apples", "Carrots", "Potatoes", "Wheat Flour"], distanceKm: 8, price: 25, lat: 28.527, lng: 77.220 },
+      { id: 4, name: "Nature's Best", address: "Gurgaon Sector 29", produceAvailable: ["Organic Vegetables", "Herbs", "Grains"], distanceKm: 20, price: 40, lat: 28.460, lng: 77.080 },
+      { id: 5, name: "Sunshine Farms", address: "Rajouri Garden", produceAvailable: ["Fresh Vegetables", "Spices", "Rice"], distanceKm: 10, price: 32, lat: 28.650, lng: 77.120 },
+      { id: 6, name: "Grain Masters", address: "Faridabad", produceAvailable: ["Wheat", "Barley", "Corn"], distanceKm: 25, price: 22, lat: 28.409, lng: 77.317 }
     ];
-    let map, userMarker, userLocation = null;
-    const defaultLocation = [28.6139, 77.2090]; // Delhi
+
+    // Buyers Data
+    const buyers = [
+      { id: 1, name: "Green Grocery Store", address: "Sector 18, Noida", type: "Retailer", produceWanted: ["Organic Tomatoes", "Fresh Kale", "Wheat"], distanceKm: 5, avgPrice: 28, lat: 28.570, lng: 77.320 },
+      { id: 2, name: "City Fresh Restaurant", address: "Connaught Place, Delhi", type: "Restaurant", produceWanted: ["Cherry Tomatoes", "Spinach", "Basmati Rice"], distanceKm: 12, avgPrice: 35, lat: 28.633, lng: 77.220 },
+      { id: 3, name: "Farmers Market", address: "Saket, Delhi", type: "Market", produceWanted: ["Apples", "Carrots", "Potatoes", "Wheat Flour"], distanceKm: 8, avgPrice: 25, lat: 28.527, lng: 77.220 },
+      { id: 4, name: "Organic Foods Retail", address: "Gurgaon Sector 29", type: "Retailer", produceWanted: ["Organic Vegetables", "Herbs", "Grains"], distanceKm: 20, avgPrice: 40, lat: 28.460, lng: 77.080 },
+      { id: 5, name: "Delhi Kitchen", address: "Rajouri Garden", type: "Restaurant", produceWanted: ["Fresh Vegetables", "Spices", "Rice"], distanceKm: 10, avgPrice: 32, lat: 28.650, lng: 77.120 },
+      { id: 6, name: "Grain Mill Corporation", address: "Faridabad", type: "Processor", produceWanted: ["Wheat", "Barley", "Corn"], distanceKm: 25, avgPrice: 22, lat: 28.409, lng: 77.317 }
+    ];
+
+    // Global variables
+    let map, buyerMap, userMarker, buyerUserMarker, userLocation = null, buyerUserLocation = null;
+    const defaultLocation = [28.6139, 77.2090]; // Delhi coordinates
+
+    // Initialize Leaflet Map for Farmers
     function initMap() {
       map = L.map('mapContainer').setView(defaultLocation, 11);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{ attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      // Add buyers to map
       buyers.forEach(b => {
-        const icon = L.divIcon({ html: '<div class="bg-primary rounded-full p-2 flex items-center justify-center text-white shadow-md" style="width:36px;height:36px;"><i class="fas fa-store"></i></div>', className: '', iconSize: [36,36], iconAnchor: [18,18] });
-        const marker = L.marker([b.lat,b.lng], { icon }).addTo(map);
-        marker.bindPopup(`<div class="p-2"><h4 class="font-semibold text-primary">${b.name}</h4><p class="text-sm my-1">${b.address}</p><p class="text-sm my-1">Wants: ${b.produceWanted.join(', ')}</p><p class="text-sm my-1">Avg Price: ₹${b.avgPrice}/kg</p></div>`);
+        // Create custom icon
+        const customIcon = L.divIcon({
+          html: `<div class="bg-primary rounded-full p-2 flex items-center justify-center text-white shadow-md" style="width: 36px; height: 36px;">
+                  <i class="fas fa-store"></i>
+                </div>`,
+          className: '',
+          iconSize: [36, 36],
+          iconAnchor: [18, 18]
+        });
+        
+        const marker = L.marker([b.lat, b.lng], {icon: customIcon}).addTo(map);
+        marker.bindPopup(`
+          <div class="p-2">
+            <h4 class="font-semibold text-primary">${b.name}</h4>
+            <p class="text-sm my-1">${b.address}</p>
+            <p class="text-sm my-1">Wants: ${b.produceWanted.join(', ')}</p>
+            <p class="text-sm my-1">Avg Price: ₹${b.avgPrice}/kg</p>
+          </div>
+        `);
       });
     }
+
+    // Initialize Leaflet Map for Buyers
+    function initBuyerMap() {
+      buyerMap = L.map('buyerMapContainer').setView(defaultLocation, 11);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(buyerMap);
+
+      // Add farmers to map
+      farmers.forEach(f => {
+        // Create custom icon
+        const customIcon = L.divIcon({
+          html: `<div class="bg-green-600 rounded-full p-2 flex items-center justify-center text-white shadow-md" style="width: 36px; height: 36px;">
+                  <i class="fas fa-tractor"></i>
+                </div>`,
+          className: '',
+          iconSize: [36, 36],
+          iconAnchor: [18, 18]
+        });
+        
+        const marker = L.marker([f.lat, f.lng], {icon: customIcon}).addTo(buyerMap);
+        marker.bindPopup(`
+          <div class="p-2">
+            <h4 class="font-semibold text-primary">${f.name}</h4>
+            <p class="text-sm my-1">${f.address}</p>
+            <p class="text-sm my-1">Available: ${f.produceAvailable.join(', ')}</p>
+            <p class="text-sm my-1">Price: ₹${f.price}/kg</p>
+          </div>
+        `);
+      });
+    }
+
+    // Get user's location for farmers
     function locateUser() {
-      const statusEl = document.getElementById('locationStatus');
-      statusEl.textContent = "Locating...";
+      const statusElement = document.getElementById('locationStatus');
+      statusElement.textContent = "Locating...";
+      
       if (!navigator.geolocation) {
-        statusEl.textContent = "Geolocation is not supported by your browser";
+        statusElement.textContent = "Geolocation is not supported by your browser";
         return;
       }
-      navigator.geolocation.getCurrentPosition(pos => {
-        userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        map.setView([userLocation.lat, userLocation.lng], 13);
-        if (userMarker) map.removeLayer(userMarker);
-        const userIcon = L.divIcon({ html: '<div class="bg-blue-500 rounded-full p-2 flex items-center justify-center text-white shadow-md" style="width:40px;height:40px;"><i class="fas fa-user"></i></div>', className: '', iconSize:[40,40], iconAnchor:[20,20] });
-        userMarker = L.marker([userLocation.lat, userLocation.lng], { icon: userIcon }).addTo(map).bindPopup("<strong>Your Location</strong>").openPopup();
-        L.circle([userLocation.lat, userLocation.lng], { color:'#2A7D2E', fillColor:'#2A7D2E', fillOpacity:0.1, radius: document.getElementById('distanceRangeMap').value * 1000 }).addTo(map);
-        statusEl.textContent = `Location found! Showing buyers within ${document.getElementById('distanceRangeMap').value} km.`;
-        updateBuyerDistances(userLocation); renderBuyers();
-      }, () => {
-        statusEl.textContent = "Unable to retrieve your location. Please enter it manually.";
-      }, { enableHighAccuracy:true, timeout:5000, maximumAge:0 });
+      
+      function success(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        
+        userLocation = { lat: latitude, lng: longitude };
+        
+        // Update map view
+        map.setView([latitude, longitude], 13);
+        
+        // Add or update user marker
+        if (userMarker) {
+          map.removeLayer(userMarker);
+        }
+        
+        // Create custom user icon
+        const userCustomIcon = L.divIcon({
+          html: `<div class="bg-blue-500 rounded-full p-2 flex items-center justify-center text-white shadow-md" style="width: 40px; height: 40px;">
+                  <i class="fas fa-user"></i>
+                </div>`,
+          className: '',
+          iconSize: [40, 40],
+          iconAnchor: [20, 20]
+        });
+        
+        userMarker = L.marker([latitude, longitude], {icon: userCustomIcon})
+          .addTo(map)
+          .bindPopup("<strong>Your Location</strong>")
+          .openPopup();
+        
+        // Add a circle around the user location
+        L.circle([latitude, longitude], {
+          color: '#2A7D2E',
+          fillColor: '#2A7D2E',
+          fillOpacity: 0.1,
+          radius: document.getElementById('distanceRangeMap').value * 1000
+        }).addTo(map);
+        
+        statusElement.textContent = `Location found! Showing buyers within ${document.getElementById('distanceRangeMap').value} km.`;
+        
+        // Update buyer distances based on user location
+        updateBuyerDistances(userLocation);
+        renderBuyers();
+      }
+      
+      function error() {
+        statusElement.textContent = "Unable to retrieve your location. Please enter it manually.";
+      }
+      
+      navigator.geolocation.getCurrentPosition(success, error, {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      });
     }
+
+    // Get user's location for buyers
+    function locateBuyerUser() {
+      const statusElement = document.getElementById('buyerLocationStatus');
+      statusElement.textContent = "Locating...";
+      
+      if (!navigator.geolocation) {
+        statusElement.textContent = "Geolocation is not supported by your browser";
+        return;
+      }
+      
+      function success(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        
+        buyerUserLocation = { lat: latitude, lng: longitude };
+        
+        // Update map view
+        buyerMap.setView([latitude, longitude], 13);
+        
+        // Add or update user marker
+        if (buyerUserMarker) {
+          buyerMap.removeLayer(buyerUserMarker);
+        }
+        
+        // Create custom user icon
+        const userCustomIcon = L.divIcon({
+          html: `<div class="bg-blue-500 rounded-full p-2 flex items-center justify-center text-white shadow-md" style="width: 40px; height: 40px;">
+                  <i class="fas fa-user"></i>
+                </div>`,
+          className: '',
+          iconSize: [40, 40],
+          iconAnchor: [20, 20]
+        });
+        
+        buyerUserMarker = L.marker([latitude, longitude], {icon: userCustomIcon})
+          .addTo(buyerMap)
+          .bindPopup("<strong>Your Location</strong>")
+          .openPopup();
+        
+        // Add a circle around the user location
+        L.circle([latitude, longitude], {
+          color: '#2A7D2E',
+          fillColor: '#2A7D2E',
+          fillOpacity: 0.1,
+          radius: document.getElementById('buyerDistanceRangeMap').value * 1000
+        }).addTo(buyerMap);
+        
+        statusElement.textContent = `Location found! Showing farmers within ${document.getElementById('buyerDistanceRangeMap').value} km.`;
+        
+        // Update farmer distances based on user location
+        updateFarmerDistances(buyerUserLocation);
+        renderFarmers();
+      }
+      
+      function error() {
+        statusElement.textContent = "Unable to retrieve your location. Please enter it manually.";
+      }
+      
+      navigator.geolocation.getCurrentPosition(success, error, {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      });
+    }
+
+    // Calculate distance between two coordinates (Haversine formula)
     function calculateDistance(lat1, lon1, lat2, lon2) {
-      const R = 6371;
+      const R = 6371; // Earth's radius in km
       const dLat = deg2rad(lat2 - lat1);
       const dLon = deg2rad(lon2 - lon1);
-      const a = Math.sin(dLat/2)**2 + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2)**2;
-      return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+      const distance = R * c; // Distance in km
+      return distance;
     }
-    function deg2rad(deg) { return deg * (Math.PI/180); }
-    function updateBuyerDistances(loc) {
-      buyers.forEach(b => {
-        b.distanceKm = calculateDistance(loc.lat, loc.lng, b.lat, b.lng);
+
+    function deg2rad(deg) {
+      return deg * (Math.PI/180);
+    }
+
+    // Update buyer distances based on user location
+    function updateBuyerDistances(userLoc) {
+      buyers.forEach(buyer => {
+        buyer.distanceKm = calculateDistance(
+          userLoc.lat, userLoc.lng, 
+          buyer.lat, buyer.lng
+        );
       });
     }
-    function populateProduceFilter() {
-      const select = document.getElementById('produceTypeFilter');
-      const types = [...new Set(buyers.flatMap(b => b.produceWanted.map(p => p.toLowerCase())))];
-      types.forEach(type => {
-        const option = document.createElement('option');
-        option.value = type;
-        option.textContent = type.charAt(0).toUpperCase() + type.slice(1);
-        select.appendChild(option);
+
+    // Update farmer distances based on user location
+    function updateFarmerDistances(userLoc) {
+      farmers.forEach(farmer => {
+        farmer.distanceKm = calculateDistance(
+          userLoc.lat, userLoc.lng, 
+          farmer.lat, farmer.lng
+        );
       });
     }
+
+    // Render buyer cards for farmers
     function renderBuyers() {
       const query = document.getElementById('searchInput').value.toLowerCase();
       const typeFilter = document.getElementById('produceTypeFilter').value.toLowerCase();
-      const maxDist = Number(document.getElementById('distanceRange').value);
+      const maxDistance = Number(document.getElementById('distanceRange').value);
       const grid = document.getElementById('buyersGrid');
-      const filtered = buyers.filter(b => b.distanceKm <= maxDist &&
-        (!typeFilter || b.produceWanted.some(p => p.toLowerCase().includes(typeFilter))) &&
+
+      const filtered = buyers.filter(b =>
+        b.distanceKm <= maxDistance &&
+        (!typeFilter || b.produceWanted.some(p => {
+          const produceType = getProduceType(p);
+          return produceType === typeFilter;
+        })) &&
         (!query || (b.name + b.address + b.produceWanted.join(' ')).toLowerCase().includes(query))
       );
+
+      // Sort by distance
       filtered.sort((a, b) => a.distanceKm - b.distanceKm);
+
       grid.innerHTML = '';
       filtered.forEach(b => {
         grid.innerHTML += `
@@ -574,54 +1360,412 @@
               <h3 class="font-semibold text-lg dark:text-white">${b.name}</h3>
               <span class="px-2 py-1 bg-primary/10 text-primary dark:bg-secondary/20 dark:text-secondary text-xs rounded-full">${b.type}</span>
             </div>
-            <p class="text-sm text-neutral-600 dark:text-gray-300 mb-3 flex items-center gap-2"><i class="fas fa-map-marker-alt text-primary dark:text-secondary"></i> ${b.address}</p>
-            <p class="text-sm mb-3 flex items-center gap-2 dark:text-gray-300"><i class="fas fa-route text-primary dark:text-secondary"></i> Distance: ${b.distanceKm.toFixed(1)} km</p>
-            <p class="text-sm mb-3 flex items-center gap-2 dark:text-gray-300"><i class="fas fa-shopping-basket text-primary dark:text-secondary"></i> Wanted: ${b.produceWanted.join(', ')}</p>
-            <p class="text-sm mb-4 flex items-center gap-2 dark:text-gray-300"><i class="fas fa-tag text-primary dark:text-secondary"></i> Avg Price: ₹${b.avgPrice}/kg</p>
-            <button class="w-full py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 dark:bg-secondary/20 dark:text-secondary dark:hover:bg-secondary/30 transition-colors text-sm font-medium">Contact Buyer</button>
+            <p class="text-sm text-neutral-600 dark:text-gray-300 mb-3 flex items-center gap-2">
+              <i class="fas fa-map-marker-alt text-primary dark:text-secondary"></i> ${b.address}
+            </p>
+            <p class="text-sm mb-3 flex items-center gap-2 dark:text-gray-300">
+              <i class="fas fa-route text-primary dark:text-secondary"></i> Distance: ${b.distanceKm.toFixed(1)} km
+            </p>
+            <p class="text-sm mb-3 flex items-center gap-2 dark:text-gray-300">
+              <i class="fas fa-shopping-basket text-primary dark:text-secondary"></i> Wanted: ${b.produceWanted.join(', ')}
+            </p>
+            <p class="text-sm mb-4 flex items-center gap-2 dark:text-gray-300">
+              <i class="fas fa-tag text-primary dark:text-secondary"></i> Avg Price: ₹${b.avgPrice}/kg
+            </p>
+            <button class="w-full py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 dark:bg-secondary/20 dark:text-secondary dark:hover:bg-secondary/30 transition-colors text-sm font-medium">
+              Contact Buyer
+            </button>
           </div>`;
       });
+
       document.getElementById('resultsCount').textContent = filtered.length;
     }
+
+    // Render farmer cards for buyers
+    function renderFarmers() {
+      const query = document.getElementById('buyerSearchInput').value.toLowerCase();
+      const typeFilter = document.getElementById('buyerProduceTypeFilter').value.toLowerCase();
+      const maxDistance = Number(document.getElementById('buyerDistanceRange').value);
+      const grid = document.getElementById('farmersGrid');
+
+      const filtered = farmers.filter(f =>
+        f.distanceKm <= maxDistance &&
+        (!typeFilter || f.produceAvailable.some(p => {
+          const produceType = getProduceType(p);
+          return produceType === typeFilter;
+        })) &&
+        (!query || (f.name + f.address + f.produceAvailable.join(' ')).toLowerCase().includes(query))
+      );
+
+      // Sort by distance
+      filtered.sort((a, b) => a.distanceKm - b.distanceKm);
+
+      grid.innerHTML = '';
+      filtered.forEach(f => {
+        grid.innerHTML += `
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="flex justify-between items-start mb-3">
+              <h3 class="font-semibold text-lg dark:text-white">${f.name}</h3>
+              <span class="px-2 py-1 bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100 text-xs rounded-full">Farmer</span>
+            </div>
+            <p class="text-sm text-neutral-600 dark:text-gray-300 mb-3 flex items-center gap-2">
+              <i class="fas fa-map-marker-alt text-primary dark:text-secondary"></i> ${f.address}
+            </p>
+            <p class="text-sm mb-3 flex items-center gap-2 dark:text-gray-300">
+              <i class="fas fa-route text-primary dark:text-secondary"></i> Distance: ${f.distanceKm.toFixed(1)} km
+            </p>
+            <p class="text-sm mb-3 flex items-center gap-2 dark:text-gray-300">
+              <i class="fas fa-seedling text-primary dark:text-secondary"></i> Available: ${f.produceAvailable.join(', ')}
+            </p>
+            <p class="text-sm mb-4 flex items-center gap-2 dark:text-gray-300">
+              <i class="fas fa-tag text-primary dark:text-secondary"></i> Price: ₹${f.price}/kg
+            </p>
+            <button class="w-full py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 dark:bg-secondary/20 dark:text-secondary dark:hover:bg-secondary/30 transition-colors text-sm font-medium">
+              Contact Farmer
+            </button>
+          </div>`;
+      });
+
+      document.getElementById('buyerResultsCount').textContent = filtered.length;
+    }
+
+    // Helper function to determine produce type
+    function getProduceType(produce) {
+      const grains = ['wheat', 'rice', 'barley', 'corn', 'oat', 'millet', 'quinoa', 'grain', 'flour'];
+      const fruits = ['apple', 'banana', 'orange', 'mango', 'berry', 'grape', 'peach', 'pear', 'plum', 'fruit'];
+      const vegetables = ['tomato', 'potato', 'carrot', 'spinach', 'kale', 'lettuce', 'cabbage', 'onion', 'vegetable'];
+      const dairy = ['milk', 'cheese', 'yogurt', 'butter', 'cream', 'dairy'];
+      
+      const lowerProduce = produce.toLowerCase();
+      
+      if (grains.some(grain => lowerProduce.includes(grain))) return 'grain';
+      if (fruits.some(fruit => lowerProduce.includes(fruit))) return 'fruit';
+      if (vegetables.some(vegetable => lowerProduce.includes(vegetable))) return 'vegetable';
+      if (dairy.some(dairy => lowerProduce.includes(dairy))) return 'dairy';
+      
+      return 'other';
+    }
+
+    // Modal functionality
+    function setupModals() {
+      const loginModal = document.getElementById('loginModal');
+      const orderModal = document.getElementById('orderModal');
+      const buyerLoginBtn = document.getElementById('buyerLoginBtn');
+      const mobileBuyerLoginBtn = document.getElementById('mobileBuyerLoginBtn');
+      const openOrderModalBtn = document.getElementById('openOrderModal');
+      const closeLoginModal = document.getElementById('closeLoginModal');
+      const closeOrderModal = document.getElementById('closeOrderModal');
+      const loginForm = document.getElementById('loginForm');
+      const orderForm = document.getElementById('orderForm');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const buyerDashboard = document.getElementById('buyerDashboard');
+      const mainContent = document.querySelector('body > :not(#buyerDashboard)');
+      
+      // Open login modal
+      [buyerLoginBtn, mobileBuyerLoginBtn].forEach(btn => {
+        btn.addEventListener('click', () => {
+          loginModal.style.display = 'flex';
+        });
+      });
+      
+      // Open order modal
+      openOrderModalBtn.addEventListener('click', () => {
+        orderModal.style.display = 'flex';
+      });
+      
+      // Close login modal
+      closeLoginModal.addEventListener('click', () => {
+        loginModal.style.display = 'none';
+      });
+      
+      // Close order modal
+      closeOrderModal.addEventListener('click', () => {
+        orderModal.style.display = 'none';
+      });
+      
+      // Login form submission
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        loginModal.style.display = 'none';
+        
+        // Hide main content and show dashboard
+        mainContent.style.display = 'none';
+        buyerDashboard.classList.remove('hidden');
+        
+        // Initialize charts
+        initCharts();
+      });
+      
+      // Order form submission
+      orderForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        orderModal.style.display = 'none';
+        alert('Order request submitted! Farmers will contact you with their offers.');
+      });
+      
+      // Logout functionality
+      logoutBtn.addEventListener('click', () => {
+        buyerDashboard.classList.add('hidden');
+        mainContent.style.display = 'block';
+      });
+      
+      // Close modal when clicking outside
+      window.addEventListener('click', (e) => {
+        if (e.target === loginModal) {
+          loginModal.style.display = 'none';
+        }
+        if (e.target === orderModal) {
+          orderModal.style.display = 'none';
+        }
+      });
+    }
+    
+    // Initialize charts for buyer dashboard
+    function initCharts() {
+      // Produce types chart
+      const produceCtx = document.getElementById('produceChart').getContext('2d');
+      new Chart(produceCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Vegetables', 'Fruits', 'Grains', 'Dairy'],
+          datasets: [{
+            data: [45, 25, 20, 10],
+            backgroundColor: [
+              '#2A7D2E', // primary green
+              '#FF9E1F', // secondary orange
+              '#8BC34A', // accent light green
+              '#4CAF50'  // another green
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#000'
+              }
+            }
+          }
+        }
+      });
+      
+      // Spending trend chart
+      const spendingCtx = document.getElementById('spendingChart').getContext('2d');
+      new Chart(spendingCtx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+          datasets: [{
+            label: 'Monthly Spending (₹)',
+            data: [65000, 59000, 72000, 81000, 78000, 85000, 93000, 91000, 89000, 82560],
+            borderColor: '#2A7D2E',
+            backgroundColor: 'rgba(42, 125, 46, 0.1)',
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: false,
+              grid: {
+                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+              },
+              ticks: {
+                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#000'
+              }
+            },
+            x: {
+              grid: {
+                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+              },
+              ticks: {
+                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#000'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#000'
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    // QR Code scanning simulation
+    function setupQRScanner() {
+      const qrScanner = document.getElementById('qr-scanner');
+      
+      qrScanner.addEventListener('click', () => {
+        alert('QR scanner activated. In a real application, this would open your camera to scan a QR code. For demonstration, we\'re showing sample supply chain data.');
+        
+        // Highlight the timeline
+        document.querySelectorAll('.timeline-step').forEach((step, index) => {
+          setTimeout(() => {
+            step.style.opacity = '1';
+            step.style.transition = 'opacity 0.5s ease';
+          }, index * 300);
+        });
+      });
+    }
+
+    // User type tabs functionality
+    function setupUserTabs() {
+      const farmerTab = document.getElementById('farmerTab');
+      const buyerTab = document.getElementById('buyerTab');
+      const farmerContent = document.getElementById('farmerContent');
+      const buyerContent = document.getElementById('buyerContent');
+      
+      farmerTab.addEventListener('click', () => {
+        farmerTab.classList.add('active');
+        buyerTab.classList.remove('active');
+        farmerContent.classList.add('active');
+        buyerContent.classList.remove('active');
+      });
+      
+      buyerTab.addEventListener('click', () => {
+        buyerTab.classList.add('active');
+        farmerTab.classList.remove('active');
+        buyerContent.classList.add('active');
+        farmerContent.classList.remove('active');
+      });
+    }
+
+    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('year').textContent = new Date().getFullYear();
       initMap();
-      populateProduceFilter();
+      initBuyerMap();
       renderBuyers();
-      document.getElementById('darkModeToggle').addEventListener('click', () => document.documentElement.classList.toggle('dark'));
+      renderFarmers();
+      setupModals();
+      setupQRScanner();
+      setupUserTabs();
+
+      // Dark mode toggle
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      darkModeToggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+      });
+
+      // Add event listener for location buttons
       document.getElementById('locateMe').addEventListener('click', locateUser);
-      const mapSlider = document.getElementById('distanceRangeMap'),
-            mapLabel = document.getElementById('distanceLabel'),
-            searchSlider = document.getElementById('distanceRange'),
-            searchLabel = document.getElementById('distanceValue');
+      document.getElementById('buyerLocateMe').addEventListener('click', locateBuyerUser);
+
+      // Make sliders interactive for farmers
+      const mapSlider = document.getElementById('distanceRangeMap');
+      const mapLabel = document.getElementById('distanceLabel');
+      const searchSlider = document.getElementById('distanceRange');
+      const searchLabel = document.getElementById('distanceValue');
+
       mapSlider.addEventListener('input', () => {
         mapLabel.textContent = mapSlider.value;
-        if (userLocation) locateUser();
+        if (userLocation) {
+          // Update the circle radius if user location is set
+          locateUser(); // This will recreate the circle with new radius
+        }
       });
+
       searchSlider.addEventListener('input', () => {
         searchLabel.textContent = searchSlider.value;
         renderBuyers();
       });
+
+      // Make sliders interactive for buyers
+      const buyerMapSlider = document.getElementById('buyerDistanceRangeMap');
+      const buyerMapLabel = document.getElementById('buyerDistanceLabel');
+      const buyerSearchSlider = document.getElementById('buyerDistanceRange');
+      const buyerSearchLabel = document.getElementById('buyerDistanceValue');
+
+      buyerMapSlider.addEventListener('input', () => {
+        buyerMapLabel.textContent = buyerMapSlider.value;
+        if (buyerUserLocation) {
+          // Update the circle radius if user location is set
+          locateBuyerUser(); // This will recreate the circle with new radius
+        }
+      });
+
+      buyerSearchSlider.addEventListener('input', () => {
+        buyerSearchLabel.textContent = buyerSearchSlider.value;
+        renderFarmers();
+      });
+
+      // Search inputs for farmers
       ['searchInput', 'produceTypeFilter'].forEach(id =>
         document.getElementById(id).addEventListener('input', renderBuyers)
       );
+
+      // Search inputs for buyers
+      ['buyerSearchInput', 'buyerProduceTypeFilter'].forEach(id =>
+        document.getElementById(id).addEventListener('input', renderFarmers)
+      );
+
+      // Manual location input for farmers
       document.getElementById('locationInput').addEventListener('change', function() {
-        const status = document.getElementById('locationStatus');
-        status.textContent = `Using manual location: ${this.value}. Distances are approximate.`;
+        // In a real app, you would geocode this address to coordinates
+        const statusElement = document.getElementById('locationStatus');
+        statusElement.textContent = `Using manual location: ${this.value}. Distances are approximate.`;
+        
+        // For demo purposes, we'll just use a random location near Delhi
         userLocation = {
-          lat: defaultLocation[0] + (Math.random()*0.1 - 0.05),
-          lng: defaultLocation[1] + (Math.random()*0.1 - 0.05)
+          lat: defaultLocation[0] + (Math.random() * 0.1 - 0.05),
+          lng: defaultLocation[1] + (Math.random() * 0.1 - 0.05)
         };
+        
         updateBuyerDistances(userLocation);
         renderBuyers();
       });
+
+      // Manual location input for buyers
+      document.getElementById('buyerLocationInput').addEventListener('change', function() {
+        // In a real app, you would geocode this address to coordinates
+        const statusElement = document.getElementById('buyerLocationStatus');
+        statusElement.textContent = `Using manual location: ${this.value}. Distances are approximate.`;
+        
+        // For demo purposes, we'll just use a random location near Delhi
+        buyerUserLocation = {
+          lat: defaultLocation[0] + (Math.random() * 0.1 - 0.05),
+          lng: defaultLocation[1] + (Math.random() * 0.1 - 0.05)
+        };
+        
+        updateFarmerDistances(buyerUserLocation);
+        renderFarmers();
+      });
+
+      // Form submission for farmers
       document.getElementById('submitListing').addEventListener('click', function() {
         const form = document.getElementById('listingForm');
-        const statusEl = document.getElementById('formStatus');
+        const statusElement = document.getElementById('formStatus');
+        
         if (form.checkValidity()) {
-          statusEl.classList.remove('hidden');
-          setTimeout(() => statusEl.classList.add('hidden'), 3000);
-        } else form.reportValidity();
+          statusElement.classList.remove('hidden');
+          setTimeout(() => {
+            statusElement.classList.add('hidden');
+          }, 3000);
+        } else {
+          form.reportValidity();
+        }
+      });
+
+      // Form submission for buyers
+      document.getElementById('submitBuyerRegistration').addEventListener('click', function() {
+        const form = document.getElementById('buyerRegistrationForm');
+        const statusElement = document.getElementById('buyerFormStatus');
+        
+        if (form.checkValidity()) {
+          statusElement.classList.remove('hidden');
+          setTimeout(() => {
+            statusElement.classList.add('hidden');
+          }, 3000);
+        } else {
+          form.reportValidity();
+        }
       });
     });
   </script>
