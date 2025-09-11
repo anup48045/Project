@@ -423,9 +423,9 @@ function setupModals() {
     e.preventDefault();
     loginModal.style.display = 'none';
     
-    // Hide main content and show dashboard
-    mainContent.style.display = 'none';
-    buyerDashboard.classList.remove('hidden');
+    // // Hide main content and show dashboard
+    // mainContent.style.display = 'none';
+    // buyerDashboard.classList.remove('hidden');
     
     // Initialize charts
     initCharts();
@@ -447,7 +447,7 @@ function setupModals() {
   // Close modal when clicking outside
   window.addEventListener('click', (e) => {
     if (e.target === loginModal) {
-      loginModal.style.display = 'none';
+      loginModal.style.display = 'flex';
     }
     if (e.target === orderModal) {
       orderModal.style.display = 'none';

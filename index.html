@@ -555,7 +555,7 @@
             <input type="password" required class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="Your password">
           </div>
           <button type="submit" class="w-full px-4 py-2 rounded-lg btn-primary "
-          ><a href="dashBoardf.html">Login to Dashboard</a> </button>
+          ><a href="dashBoardb.html">Login to Dashboard</a> </button>
         </form>
         <p class="text-sm text-center mt-4 text-gray-500 dark:text-gray-400">
           Demo: Use any credentials to access the demo dashboard
@@ -575,49 +575,7 @@
           </button>
         </div>
         <form id="orderForm" class="space-y-4">
-          <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Type</label>
-            <select required name="produceType" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
-              <option value="">Select type</option>
-              <option value="vegetable">Vegetables</option>
-              <option value="fruit">Fruits</option>
-              <option value="grain">Grains</option>
-              <option value="dairy">Dairy</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Name</label>
-            <input required type="text" name="produce" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., Organic Tomatoes, Basmati Rice">
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Quantity</label>
-              <input required type="number" min="1" name="quantity" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., 100">
-            </div>
-            <div>
-              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Unit</label>
-              <select name="unit" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
-                <option value="kg">kg</option>
-                <option value="quintal">Quintal</option>
-                <option value="ton">Ton</option>
-                <option value="piece">Piece</option>
-                <option value="dozen">Dozen</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Maximum Price (₹ per unit)</label>
-            <input required type="number" min="1" step="0.5" name="maxPrice" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., 30.5">
-          </div>
-          <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Delivery Date</label>
-            <input required type="date" name="deliveryDate" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
-          </div>
-          <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Additional Notes</label>
-            <textarea name="notes" rows="3" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="Any special requirements or quality specifications"></textarea>
-          </div>
-          <button type="submit" class="w-full px-4 py-2 rounded-lg btn-primary">Submit Order Request</button>
+          
         </form>
       </div>
     </div>
@@ -628,154 +586,13 @@
     <div class="dashboard-container">
       <!-- Sidebar -->
       <div class="dashboard-sidebar">
-        <div class="flex items-center gap-2 mb-8">
-          <span class="inline-block w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
-            <i class="fas fa-leaf text-white text-sm"></i>
-          </span>
-          <span class="text-white font-medium">Buyer Dashboard</span>
-        </div>
-        
+       
         <nav class="space-y-2">
-          <a href="#dashboard-overview" class="block py-2 px-4 rounded-lg bg-white/10 text-white font-medium">
-            <i class="fas fa-chart-pie mr-2"></i> Overview
-          </a>
-          <a href="#dashboard-contacts" class="block py-2 px-4 rounded-lg hover:bg-white/10 text-white transition-colors">
-            <i class="fas fa-users mr-2"></i> Farmer Contacts
-          </a>
-          <a href="#dashboard-orders" class="block py-2 px-4 rounded-lg hover:bg-white/10 text-white transition-colors">
-            <i class="fas fa-shopping-cart mr-2"></i> Orders
-          </a>
-          <a href="#dashboard-analytics" class="block py-2 px-4 rounded-lg hover:bg-white/10 text-white transition-colors">
-            <i class="fas fa-chart-line mr-2"></i> Analytics
-          </a>
-          <a href="#" id="logoutBtn" class="block py-2 px-4 rounded-lg hover:bg-white/10 text-white transition-colors mt-8">
-            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+         <a href="#" id="logoutBtn" class="block py-2 px-4 rounded-lg hover:bg-white/10 text-white transition-colors mt-8">
           </a>
         </nav>
       </div>
-      
-      <!-- Main Content -->
-      <div class="dashboard-main">
-        <div class="mb-6">
-          <h1 class="text-2xl font-bold dark:text-white">Buyer Dashboard</h1>
-          <p class="text-neutral-600 dark:text-gray-300">Welcome back! Here's your business overview.</p>
-        </div>
-        
-        <!-- Stats Overview -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div class="stat-card">
-            <div class="flex items-center">
-              <div class="p-3 rounded-lg bg-green-100 dark:bg-green-900/30 mr-4">
-                <i class="fas fa-users text-green-600 dark:text-green-400"></i>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Farmer Contacts</p>
-                <p class="text-xl font-bold dark:text-white">24</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="stat-card">
-            <div class="flex items-center">
-              <div class="p-3 rounded-lg bg-blue-100 dark:bg-blue-900/30 mr-4">
-                <i class="fas fa-shopping-cart text-blue-600 dark:text-blue-400"></i>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Active Orders</p>
-                <p class="text-xl font-bold dark:text-white">8</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="stat-card">
-            <div class="flex items-center">
-              <div class="p-3 rounded-lg bg-orange-100 dark:bg-orange-900/30 mr-4">
-                <i class="fas fa-truck text-orange-600 dark:text-orange-400"></i>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Pending Delivery</p>
-                <p class="text-xl font-bold dark:text-white">3</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="stat-card">
-            <div class="flex items-center">
-              <div class="p-3 rounded-lg bg-purple-100 dark:bg-purple-900/30 mr-4">
-                <i class="fas fa-rupee-sign text-purple-600 dark:text-purple-400"></i>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Monthly Spend</p>
-                <p class="text-xl font-bold dark:text-white">₹82,560</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Charts -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div class="stat-card">
-            <h3 class="font-semibold mb-4 dark:text-white">Produce Types Ordered</h3>
-            <canvas id="produceChart" height="250"></canvas>
-          </div>
-          
-          <div class="stat-card">
-            <h3 class="font-semibold mb-4 dark:text-white">Monthly Spending Trend</h3>
-            <canvas id="spendingChart" height="250"></canvas>
-          </div>
-        </div>
-        
-        <!-- Farmer Contacts Table -->
-        <div class="stat-card">
-          <h3 class="font-semibold mb-4 dark:text-white">Recent Farmer Contacts</h3>
-          <div class="overflow-x-auto">
-            <table class="min-w-full">
-              <thead>
-                <tr class="border-b border-gray-200 dark:border-gray-700">
-                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Farmer</th>
-                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Produce</th>
-                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
-                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Location</th>
-                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Contact Date</th>
-                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                <tr>
-                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Rajesh Kumar</td>
-                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Organic Wheat</td>
-                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">200 kg</td>
-                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Meerut</td>
-                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">2023-10-15</td>
-                  <td class="py-3 px-4 whitespace-nowrap">
-                    <span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-100 text-xs rounded-full">Pending</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Suman Yadav</td>
-                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Fresh Tomatoes</td>
-                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">50 kg</td>
-                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Ghaziabad</td>
-                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">2023-10-14</td>
-                  <td class="py-3 px-4 whitespace-nowrap">
-                    <span class="px-2 py-1 bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-100 text-xs rounded-full">Confirmed</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Amrit Singh</td>
-                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Basmati Rice</td>
-                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">500 kg</td>
-                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Karnal</td>
-                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">2023-10-13</td>
-                  <td class="py-3 px-4 whitespace-nowrap">
-                    <span class="px-2 py-1 bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-100 text-xs rounded-full">Negotiating</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+     
     </div>
   </div>
 

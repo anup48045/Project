@@ -52,7 +52,7 @@
 
   </div>
 
-    <!-- BUYER DASHBOARD -->
+  <!-- BUYER DASHBOARD -->
   <div id="buyerDashboard">
     <div class="dashboard-container">
       <!-- Sidebar -->
@@ -407,16 +407,16 @@
     </section>
 
     <!-- BUYER MAP -->
-    <section class="py-16 bg-white dark:bg-gray-900">
+    <section id="map" class="py-16 bg-white dark:bg-gray-900">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col lg:flex-row gap-10 items-start">
           <!-- Map container -->
           <div class="flex-1">
-            <h2 class="text-3xl font-bold mb-2">Farmers near you</h2>
-            <p class="text-neutral-600 dark:text-gray-300">Explore farmers within your radius using the interactive map below.</p>
-            <div id="buyerMapContainer" class="mt-6"></div>
-            <div id="buyerLocationStatus" class="location-status text-sm text-neutral-600 dark:text-gray-300 mt-3">
-              Click "Use My Location" to see farmers near you.
+            <h2 class="text-3xl font-bold mb-2">Buyers near you</h2>
+            <p class="text-neutral-600 dark:text-gray-300">Explore buyers within your radius using the interactive map below.</p>
+            <div id="mapContainer" class="mt-6"></div>
+            <div id="locationStatus" class="location-status text-sm text-neutral-600 dark:text-gray-300 mt-3">
+              Click "Use My Location" to see buyers near you.
             </div>
           </div>
           <!-- Search controls -->
@@ -424,66 +424,66 @@
             <h3 class="font-semibold text-lg flex items-center gap-2 text-primary dark:text-secondary">
               <i class="fas fa-map-marker-alt"></i> Your location
             </h3>
-            <p class="text-sm text-neutral-600 dark:text-gray-300 mt-1">Allow location access to find farmers near you.</p>
+            <p class="text-sm text-neutral-600 dark:text-gray-300 mt-1">Allow location access to find buyers near you.</p>
             <div class="mt-5 space-y-4">
-              <button id="buyerLocateMe" class="w-full px-4 py-2 rounded-lg btn-primary flex items-center justify-center gap-2">
+              <button id="locateMe" class="w-full px-4 py-2 rounded-lg btn-primary flex items-center justify-center gap-2">
                 <i class="fas fa-location-arrow"></i> Use My Location
               </button>
               <div class="text-center text-sm text-neutral-500 dark:text-gray-400">or</div>
-              <input id="buyerLocationInput" type="text" placeholder="Enter your location manually" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
+              <input id="locationInput" type="text" placeholder="Enter your location manually" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
               <div>
-                <label class="block text-sm font-medium mb-1 dark:text-gray-300">Search Radius: <span id="buyerDistanceLabel">15</span> km</label>
-                <input id="buyerDistanceRangeMap" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
+                <label class="block text-sm font-medium mb-1 dark:text-gray-300">Search Radius: <span id="distanceLabel">15</span> km</label>
+                <input id="distanceRangeMap" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
               </div>
-              <p class="text-xs text-neutral-500 dark:text-gray-400">This updates the farmers list based on your location.</p>
+              <p class="text-xs text-neutral-500 dark:text-gray-400">This updates the buyers list based on your location.</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- BUYER SEARCH + LISTINGS -->
-    <section id="buyer-browse" class="section-padding bg-light dark:bg-dark">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-          <div>
-            <h2 class="text-3xl font-bold">Find farmers with the produce you need</h2>
-            <p class="text-neutral-600 dark:text-gray-300 mt-1">Type to search and refine with filters. Results update instantly.</p>
-          </div>
-          <button id="openOrderModal" class="px-5 py-2.5 rounded-lg btn-primary flex items-center gap-2 whitespace-nowrap">
-            <i class="fas fa-plus"></i> Place Order Request
-          </button>
+   <!-- BUYER SEARCH + LISTINGS -->
+   <section id="buyer-browse" class="section-padding bg-light dark:bg-dark">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div>
+          <h2 class="text-3xl font-bold">Find farmers with the produce you need</h2>
+          <p class="text-neutral-600 dark:text-gray-300 mt-1">Type to search and refine with filters. Results update instantly.</p>
         </div>
-        <div class="grid md:grid-cols-4 gap-5 mb-6">
-          <div class="md:col-span-2">
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Search by produce</label>
-            <div class="relative">
-              <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-              <input id="buyerSearchInput" type="text" placeholder="e.g., tomatoes, wheat, eggs" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
-            </div>
-          </div>
-          <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Type</label>
-            <div class="relative">
-              <i class="fas fa-tag absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-              <select id="buyerProduceTypeFilter" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
-                <option value="">All types</option>
-                <option value="vegetable">Vegetables</option>
-                <option value="fruit">Fruits</option>
-                <option value="grain">Grains</option>
-                <option value="dairy">Dairy</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Max Distance: <span id="buyerDistanceValue">15</span> km</label>
-            <input id="buyerDistanceRange" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
-          </div>
-        </div>
-        <div class="text-sm text-neutral-600 dark:text-gray-300 mb-6"><span id="buyerResultsCount">0</span> farmers match your search.</div>
-        <div id="farmersGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <button id="openOrderModal" class="px-5 py-2.5 rounded-lg btn-primary flex items-center gap-2 whitespace-nowrap">
+          <i class="fas fa-plus"></i> Place Order Request
+        </button>
       </div>
-    </section>
+      <div class="grid md:grid-cols-4 gap-5 mb-6">
+        <div class="md:col-span-2">
+          <label class="text-sm font-medium block mb-1 dark:text-gray-300">Search by produce</label>
+          <div class="relative">
+            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <input id="buyerSearchInput" type="text" placeholder="e.g., tomatoes, wheat, eggs" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
+          </div>
+        </div>
+        <div>
+          <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Type</label>
+          <div class="relative">
+            <i class="fas fa-tag absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <select id="buyerProduceTypeFilter" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+              <option value="">All types</option>
+              <option value="vegetable">Vegetables</option>
+              <option value="fruit">Fruits</option>
+              <option value="grain">Grains</option>
+              <option value="dairy">Dairy</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="text-sm font-medium block mb-1 dark:text-gray-300">Max Distance: <span id="buyerDistanceValue">15</span> km</label>
+          <input id="buyerDistanceRange" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
+        </div>
+      </div>
+      <div class="text-sm text-neutral-600 dark:text-gray-300 mb-6"><span id="buyerResultsCount">0</span> farmers match your search.</div>
+      <div id="farmersGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+  </section>
  </div>
   <!-- ORDER MODAL FOR BUYERS -->
   <div id="orderModal" class="modal">
@@ -543,8 +543,8 @@
       </div>
     </div>
   </div>
-
-  <!-- FOOTER -->
+  
+ <!-- FOOTER -->
   <footer class="py-12 border-t bg-white dark:bg-gray-900 text-center text-neutral-500 dark:text-gray-400 text-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col md:flex-row justify-between items-center gap-6">
@@ -639,6 +639,38 @@
       localStorage.setItem("theme", "light");
     }
   });
+  
+  // Modal functionality
+  const orderModal = document.getElementById("orderModal");
+  const openOrderModalBtn = document.getElementById("openOrderModal");
+  const closeOrderModalBtn = document.getElementById("closeOrderModal");
+
+  // Open modal
+  openOrderModalBtn.addEventListener("click", () => {
+    orderModal.style.display = "flex";
+  });
+
+  // Close modal (X button)
+  closeOrderModalBtn.addEventListener("click", () => {
+    orderModal.style.display = "none";
+  });
+
+  // Close modal when clicking outside content
+  window.addEventListener("click", (e) => {
+    if (e.target === orderModal) {
+      orderModal.style.display = "none";
+    }
+  });
+
+  // Handle form submission
+  document.getElementById("orderForm").addEventListener("submit", function(e) {
+    e.preventDefault(); // prevent page reload
+    alert("✅ Order request submitted successfully!");
+    orderModal.style.display = "none";
+    this.reset(); // reset form fields
+  });
+
+
 </script>
 </body>
 </html>
