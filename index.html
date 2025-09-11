@@ -4,19 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Farmers' Produce Sales Portal</title>
+  <!-- stylesheet -->
+   <link rel="stylesheet" href="style.css">
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
- 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
   <meta name="description" content="Connect farmers directly with local buyers to get better prices for their produce." />
-  <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-light dark:bg-dark text-dark dark:text-light transition-colors duration-300">
+
   <!-- NAVBAR -->
   <header class="sticky top-0 z-40 bg-white/90 dark:bg-dark/90 border-b border-gray-200 dark:border-gray-700 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
@@ -28,347 +32,482 @@
       </a>
       <nav class="hidden md:flex items-center gap-6 text-sm">
         <a href="#how" class="hover:text-primary dark:hover:text-secondary transition-colors">How it works</a>
-        <a href="#map" class="hover:text-primary dark:hover:text-secondary transition-colors">Buyers near you</a>
-        <a href="#browse" class="hover:text-primary dark:hover:text-secondary transition-colors">Search buyers</a>
-        <a href="#register" class="px-4 py-2 rounded-lg btn-primary">Register</a>
+        <a href="#map" class="hover:text-primary dark:hover:text-secondary transition-colors">Sellers near you</a>
+        <a href="#browse" class="hover:text-primary dark:hover:text-secondary transition-colors">Search sellers</a>
+        <a href="#supply-chain" class="hover:text-primary dark:hover:text-secondary transition-colors">Track Produce</a>
+        <button id="buyerLoginBtn" class="px-4 py-2 rounded-lg btn-primary">Login</button>
+        <a href="register.html" class="px-4 py-2 rounded-lg btn-secondary">Register</a>
       </nav>
       <div class="flex items-center gap-3">
         <button id="darkModeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
           <i class="fas fa-moon dark:hidden"></i>
           <i class="fas fa-sun hidden dark:inline"></i>
         </button>
-        <a href="#register" class="md:hidden px-3 py-2 rounded-lg btn-primary text-sm">Register</a>
+        <button id="mobileBuyerLoginBtn" class="md:hidden px-3 py-2 rounded-lg btn-primary text-sm">Buyer Login</button>
       </div>
     </div>
   </header>
-  <!-- HERO -->
-  <section id="hero" class="relative">
-    <div class="absolute inset-0 -z-10">
-      <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" alt="Fresh produce" class="w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/60"></div>
-    </div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-28 lg:py-36 text-white">
-      <h1 class="text-3xl sm:text-5xl font-bold leading-tight max-w-3xl">Sell smarter. Earn better. Connect directly with local buyers.</h1>
-      <p class="mt-4 text-base sm:text-lg max-w-2xl text-white/90">List your produce, compare offers, and deliver to nearby restaurants, retail stores, and markets—without middlemen.</p>
-      <div class="mt-8 flex flex-wrap gap-4">
-        <a href="#register" class="px-6 py-3 rounded-lg btn-primary font-semibold flex items-center gap-2">
-          <i class="fas fa-user-plus"></i> Register Now
-        </a>
-        <a href="#browse" class="px-6 py-3 rounded-lg btn-secondary font-semibold flex items-center gap-2">
-          <i class="fas fa-search"></i> Find Local Buyers
-        </a>
-      </div>
-    </div>
-  </section>
-  <!-- HOW IT WORKS -->
-  <section id="how" class="section-padding bg-white dark:bg-gray-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-3xl mx-auto mb-12">
-        <h2 class="text-3xl sm:text-4xl font-bold">How it works</h2>
-        <p class="text-primary dark:text-secondary mt-2">A simple 4-step process from listing to delivery.</p>
-      </div>
-      <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
-          <div class="step-number">1</div>
-          <div class="text-primary dark:text-secondary font-semibold">Create your listing</div>
-          <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Tell us your produce, quantity, and location. It takes less than a minute.</p>
-        </div>
-        <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
-          <div class="step-number">2</div>
-          <div class="text-primary dark:text-secondary font-semibold">Get matched</div>
-          <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">See nearby buyers actively looking for your produce and their average offers.</p>
-        </div>
-        <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
-          <div class="step-number">3</div>
-          <div class="text-primary dark:text-secondary font-semibold">Negotiate & confirm</div>
-          <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Chat, confirm price & schedule pickup or delivery directly with buyers.</p>
-        </div>
-        <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
-          <div class="step-number">4</div>
-          <div class="text-primary dark:text-secondary font-semibold">Deliver & get paid</div>
-          <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Complete delivery and receive payment through your preferred method.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- MAP -->
-  <section id="map" class="py-16 bg-white dark:bg-gray-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col lg:flex-row gap-10 items-start">
-        <!-- Map container -->
-        <div class="flex-1">
-          <h2 class="text-3xl font-bold mb-2">Buyers near you</h2>
-          <p class="text-neutral-600 dark:text-gray-300">Explore buyers within your radius using the interactive map below.</p>
-          <div id="mapContainer" class="mt-6"></div>
-          <div id="locationStatus" class="location-status text-sm text-neutral-600 dark:text-gray-300 mt-3">
-            Click "Use My Location" to see buyers near you.
-          </div>
-        </div>
-        <!-- Search controls -->
-        <div class="w-full lg:max-w-sm p-6 rounded-xl bg-light dark:bg-gray-800 hand-drawn-border">
-          <h3 class="font-semibold text-lg flex items-center gap-2 text-primary dark:text-secondary">
-            <i class="fas fa-map-marker-alt"></i> Your location
-          </h3>
-          <p class="text-sm text-neutral-600 dark:text-gray-300 mt-1">Allow location access to find buyers near you.</p>
-          <div class="mt-5 space-y-4">
-            <button id="locateMe" class="w-full px-4 py-2 rounded-lg btn-primary flex items-center justify-center gap-2">
-              <i class="fas fa-location-arrow"></i> Use My Location
-            </button>
-            <div class="text-center text-sm text-neutral-500 dark:text-gray-400">or</div>
-            <input id="locationInput" type="text" placeholder="Enter your location manually" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
-            <div>
-              <label class="block text-sm font-medium mb-1 dark:text-gray-300">Search Radius: <span id="distanceLabel">15</span> km</label>
-              <input id="distanceRangeMap" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
-            </div>
-            <p class="text-xs text-neutral-500 dark:text-gray-400">This updates the buyers list based on your location.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- SEARCH + LISTINGS -->
-  <section id="browse" class="section-padding bg-light dark:bg-dark">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-        <div>
-          <h2 class="text-3xl font-bold">Find buyers for your produce</h2>
-          <p class="text-neutral-600 dark:text-gray-300 mt-1">Type to search and refine with filters. Results update instantly.</p>
-        </div>
-        <a href="#register" class="px-5 py-2.5 rounded-lg btn-primary flex items-center gap-2 whitespace-nowrap">
-          <i class="fas fa-plus"></i> List Your Produce
-        </a>
-      </div>
-      <div class="grid md:grid-cols-4 gap-5 mb-6">
-        <div class="md:col-span-2">
-          <label class="text-sm font-medium block mb-1 dark:text-gray-300">Search by produce</label>
-          <div class="relative">
-            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            <input id="searchInput" type="text" placeholder="e.g., tomatoes, kale, eggs" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
-          </div>
-        </div>
-        <div>
-          <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Type</label>
-          <div class="relative">
-            <i class="fas fa-tag absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            <select id="produceTypeFilter" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
-              <option value="">All types</option>
-              <optgroup label="Cereals">
-                <option value="Barley (जौ)">Barley (जौ)</option>
-                <option value="Buckwheat (Kuttu) (कुट्टू)">Buckwheat (Kuttu) (कुट्टू)</option>
-                <option value="Foxtail Millet (Kangni) (कंगनी)">Foxtail Millet (Kangni) (कंगनी)</option>
-                <option value="Finger Millet (Ragi) (रागी)">Finger Millet (Ragi) (रागी)</option>
-                <option value="Maize (मक्का)">Maize (मक्का)</option>
-                <option value="Pearl Millet (Bajra) (बाजरा)">Pearl Millet (Bajra) (बाजरा)</option>
-                <option value="Rice (चावल)">Rice (चावल)</option>
-                <option value="Sorghum (Jowar) (ज्वार)">Sorghum (Jowar) (ज्वार)</option>
-              </optgroup>
-              <optgroup label="Pulses">
-                <option value="Chana Dal (चना दाल)">Chana Dal (चना दाल)</option>
-                <option value="Kabuli Chana (काबुली चना / छोले)">Kabuli Chana (काबुली चना / छोले)</option>
-                <option value="Kala Chana (काला चना)">Kala Chana (काला चना)</option>
-                <option value="Kulthi (कुलथी / Horse Gram)">Kulthi (कुलथी / Horse Gram)</option>
-                <option value="Lobia (लोबिया / Black-eyed Peas)">Lobia (लोबिया / Black-eyed Peas)</option>
-                <option value="Masoor Dal (लाल मसूर दाल)">Masoor Dal (लाल मसूर दाल)</option>
-                <option value="Moth Dal (मठ दाल)">Moth Dal (मठ दाल)</option>
-                <option value="Moong Dal (मूंग दाल)">Moong Dal (मूंग दाल)</option>
-                <option value="Rajma (राजमा / Kidney Beans)">Rajma (राजमा / Kidney Beans)</option>
-                <option value="Sukhe Hare Matar (सूखे हरे मटर)">Sukhe Hare Matar (सूखे हरे मटर)</option>
-                <option value="Sukhe Safed Matar (सूखे सफेद मटर)">Sukhe Safed Matar (सूखे सफेद मटर)</option>
-                <option value="Toor Dal (अरहर)">Toor Dal (अरहर)</option>
-                <option value="Urad Dal (उड़द दाल)">Urad Dal (उड़द दाल)</option>
-              </optgroup>
-              <optgroup label="Vegetables">
-                <option value="Bitter Gourd (करेला)">Bitter Gourd (करेला)</option>
-                <option value="Bottle Gourd (लौकी)">Bottle Gourd (लौकी)</option>
-                <option value="Brinjal (बैंगन)">Brinjal (बैंगन)</option>
-                <option value="Cabbage (पत्ता गोभी)">Cabbage (पत्ता गोभी)</option>
-                <option value="Carrot (गाजर)">Carrot (गाजर)</option>
-                <option value="Cauliflower (फूलगोभी)">Cauliflower (फूलगोभी)</option>
-                <option value="Chili (मिर्च)">Chili (मिर्च)</option>
-                <option value="Cucumber (खीरा)">Cucumber (खीरा)</option>
-                <option value="Garlic (लहसुन)">Garlic (लहसुन)</option>
-                <option value="Okra (भिंडी)">Okra (भिंडी)</option>
-                <option value="Onion (प्याज)">Onion (प्याज)</option>
-                <option value="Peas (मटर)">Peas (मटर)</option>
-                <option value="Potato (आलू)">Potato (आलू)</option>
-                <option value="Pumpkin (कद्दू)">Pumpkin (कद्दू)</option>
-                <option value="Ridge Gourd (तोरई)">Ridge Gourd (तोरई)</option>
-                <option value="Spinach (पालक)">Spinach (पालक)</option>
-                <option value="Tomato (टमाटर)">Tomato (टमाटर)</option>
-              </optgroup>
-              <optgroup label="Fruits">
-                <option value="Apple (सेब)">Apple (सेब)</option>
-                <option value="Avocado (एवोकाडो)">Avocado (एवोकाडो)</option>
-                <option value="Banana (केला)">Banana (केला)</option>
-                <option value="Grapes (अंगूर)">Grapes (अंगूर)</option>
-                <option value="Guava (अमरुद)">Guava (अमरुद)</option>
-                <option value="Jackfruit (कटहल)">Jackfruit (कटहल)</option>
-                <option value="Lemon (नींबू)">Lemon (नींबू)</option>
-                <option value="Lime (कागदी नींबू)">Lime (कागदी नींबू)</option>
-                <option value="Mango (आम)">Mango (आम)</option>
-                <option value="Muskmelon (खरबूजा)">Muskmelon (खरबूजा)</option>
-                <option value="Orange (संतरा)">Orange (संतरा)</option>
-                <option value="Papaya (पपीता)">Papaya (पपीता)</option>
-                <option value="Pineapple (अनानास)">Pineapple (अनानास)</option>
-                <option value="Pomegranate (अनार)">Pomegranate (अनार)</option>
-                <option value="Watermelon (तरबूज)">Watermelon (तरबूज)</option>
-              </optgroup>
-              <optgroup label="Plantation & Fiber Crops">
-                <option value="Coffee (कॉफ़ी)">Coffee (कॉफ़ी)</option>
-                <option value="Cotton (कपास)">Cotton (कपास)</option>
-                <option value="Flax (Alsi) (अलसी)">Flax (Alsi) (अलसी)</option>
-                <option value="Jute (जूट)">Jute (जूट)</option>
-                <option value="Rubber (रबर)">Rubber (रबर)</option>
-                <option value="Sugarcane (गन्ना)">Sugarcane (गन्ना)</option>
-                <option value="Tea (चाय)">Tea (चाय)</option>
-              </optgroup>
-            </select>
-          </div>
-        </div>
-        <div>
-          <label class="text-sm font-medium block mb-1 dark:text-gray-300">Max Distance: <span id="distanceValue">15</span> km</label>
-          <input id="distanceRange" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
-        </div>
-      </div>
-      <div class="text-sm text-neutral-600 dark:text-gray-300 mb-6"><span id="resultsCount">0</span> buyers match your search.</div>
-      <div id="buyersGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-    </div>
-  </section>
-  <!-- REGISTRATION section with pulse list dropdown -->
-  <section id="register" class="py-16 bg-white dark:bg-gray-900">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid lg:grid-cols-2 gap-10 items-start">
-      <div>
-        <h2 class="text-3xl font-bold">Ready to earn better?</h2>
-        <p class="text-neutral-600 dark:text-gray-300 mt-2">Create a quick listing so buyers can reach out to you.</p>
-        <div class="mt-6 p-6 bg-light dark:bg-gray-800 rounded-xl hand-drawn-border">
-          <h3 class="font-semibold text-lg flex items-center gap-2 text-primary dark:text-secondary">
-            <i class="fas fa-info-circle"></i> Why register with us?
-          </h3>
-          <ul class="mt-3 space-y-2 text-sm">
-            <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> No middlemen - keep more profit</li>
-            <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> Connect directly with verified buyers</li>
-            <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> Get fair prices for your produce</li>
-          </ul>
-        </div>
-      </div>
-      <form id="listingForm" class="p-6 rounded-xl bg-light dark:bg-gray-800 space-y-5 hand-drawn-border" onsubmit="return false;">
-        <div>
-          <label class="text-sm font-medium block mb-1 dark:text-gray-300">Your Name</label>
-          <input required type="text" name="name" placeholder="e.g., Suman Yadav" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Type</label>
-            <select required name="produce" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
-              <option value="">Select Produce</option>
-              <optgroup label="Cereals">
-                <option value="Barley (जौ)">Barley (जौ)</option>
-                <option value="Buckwheat (Kuttu) (कुट्टू)">Buckwheat (Kuttu) (कुट्टू)</option>
-                <option value="Foxtail Millet (Kangni) (कंगनी)">Foxtail Millet (Kangni) (कंगनी)</option>
-                <option value="Finger Millet (Ragi) (रागी)">Finger Millet (Ragi) (रागी)</option>
-                <option value="Maize (मक्का)">Maize (मक्का)</option>
-                <option value="Pearl Millet (Bajra) (बाजरा)">Pearl Millet (Bajra) (बाजरा)</option>
-                <option value="Rice (चावल)">Rice (चावल)</option>
-                <option value="Sorghum (Jowar) (ज्वार)">Sorghum (Jowar) (ज्वार)</option>
-              </optgroup>
-              <optgroup label="Pulses">
-                <option value="Chana Dal (चना दाल)">Chana Dal (चना दाल)</option>
-                <option value="Kabuli Chana (काबुली चना / छोले)">Kabuli Chana (काबुली चना / छोले)</option>
-                <option value="Kala Chana (काला चना)">Kala Chana (काला चना)</option>
-                <option value="Kulthi (कुलथी / Horse Gram)">Kulthi (कुलथी / Horse Gram)</option>
-                <option value="Lobia (लोबिया / Black-eyed Peas)">Lobia (लोबिया / Black-eyed Peas)</option>
-                <option value="Masoor Dal (लाल मसूर दाल)">Masoor Dal (लाल मसूर दाल)</option>
-                <option value="Moth Dal (मठ दाल)">Moth Dal (मठ दाल)</option>
-                <option value="Moong Dal (मूंग दाल)">Moong Dal (मूंग दाल)</option>
-                <option value="Rajma (राजमा / Kidney Beans)">Rajma (राजमा / Kidney Beans)</option>
-                <option value="Sukhe Hare Matar (सूखे हरे मटर)">Sukhe Hare Matar (सूखे हरे मटर)</option>
-                <option value="Sukhe Safed Matar (सूखे सफेद मटर)">Sukhe Safed Matar (सूखे सफेद मटर)</option>
-                <option value="Toor Dal (अरहर)">Toor Dal (अरहर)</option>
-                <option value="Urad Dal (उड़द दाल)">Urad Dal (उड़द दाल)</option>
-              </optgroup>
-              <optgroup label="Vegetables">
-                <option value="Bitter Gourd (करेला)">Bitter Gourd (करेला)</option>
-                <option value="Bottle Gourd (लौकी)">Bottle Gourd (लौकी)</option>
-                <option value="Brinjal (बैंगन)">Brinjal (बैंगन)</option>
-                <option value="Cabbage (पत्ता गोभी)">Cabbage (पत्ता गोभी)</option>
-                <option value="Carrot (गाजर)">Carrot (गाजर)</option>
-                <option value="Cauliflower (फूलगोभी)">Cauliflower (फूलगोभी)</option>
-                <option value="Chili (मिर्च)">Chili (मिर्च)</option>
-                <option value="Cucumber (खीरा)">Cucumber (खीरा)</option>
-                <option value="Garlic (लहसुन)">Garlic (लहसुन)</option>
-                <option value="Okra (भिंडी)">Okra (भिंडी)</option>
-                <option value="Onion (प्याज)">Onion (प्याज)</option>
-                <option value="Peas (मटर)">Peas (मटर)</option>
-                <option value="Potato (आलू)">Potato (आलू)</option>
-                <option value="Pumpkin (कद्दू)">Pumpkin (कद्दू)</option>
-                <option value="Ridge Gourd (तोरई)">Ridge Gourd (तोरई)</option>
-                <option value="Spinach (पालक)">Spinach (पालक)</option>
-                <option value="Tomato (टमाटर)">Tomato (टमाटर)</option>
-              </optgroup>
-              <optgroup label="Fruits">
-                <option value="Apple (सेब)">Apple (सेब)</option>
-                <option value="Avocado (एवोकाडो)">Avocado (एवोकाडो)</option>
-                <option value="Banana (केला)">Banana (केला)</option>
-                <option value="Grapes (अंगूर)">Grapes (अंगूर)</option>
-                <option value="Guava (अमरुद)">Guava (अमरुद)</option>
-                <option value="Jackfruit (कटहल)">Jackfruit (कटहल)</option>
-                <option value="Lemon (नींबू)">Lemon (नींबू)</option>
-                <option value="Lime (कागदी नींबू)">Lime (कागदी नींबू)</option>
-                <option value="Mango (आम)">Mango (आम)</option>
-                <option value="Muskmelon (खरबूजा)">Muskmelon (खरबूजा)</option>
-                <option value="Orange (संतरा)">Orange (संतरा)</option>
-                <option value="Papaya (पपीता)">Papaya (पपीता)</option>
-                <option value="Pineapple (अनानास)">Pineapple (अनानास)</option>
-                <option value="Pomegranate (अनार)">Pomegranate (अनार)</option>
-                <option value="Watermelon (तरबूज)">Watermelon (तरबूज)</option>
-              </optgroup>
-              <optgroup label="Plantation & Fiber Crops">
-                <option value="Coffee (कॉफ़ी)">Coffee (कॉफ़ी)</option>
-                <option value="Cotton (कपास)">Cotton (कपास)</option>
-                <option value="Flax (Alsi) (अलसी)">Flax (Alsi) (अलसी)</option>
-                <option value="Jute (जूट)">Jute (जूट)</option>
-                <option value="Rubber (रबर)">Rubber (रबर)</option>
-                <option value="Sugarcane (गन्ना)">Sugarcane (गन्ना)</option>
-                <option value="Tea (चाय)">Tea (चाय)</option>
-              </optgroup>
-            </select>
-          </div>
-          <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Quality</label>
-            <select name="quality" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
-              <option value="">Select Product Grade</option>
-              <option value="Grade A">Grade A</option>
-              <option value="Grade B">Grade B</option>
-              <option value="Grade C">Grade C</option>
-              <option value="Superior">Superior</option>
-              <option value="Standard">Standard</option>
-              <option value="Below Standard">Below Standard</option>
-              
-            </select>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Quantity</label>
-            <input required type="number" min="1" name="quantity" placeholder="e.g., 100" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
-          </div>
-          <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Location</label>
-            <input required type="text" name="location" placeholder="e.g., Ghaziabad" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
-          </div>
-        </div>
-        <button id="submitListing" class="w-full px-4 py-2.5 rounded-lg btn-primary flex items-center justify-center gap-2">
-          <i class="fas fa-paper-plane"></i> Submit Listing (Demo)
-        </button>
-        <p id="formStatus" class="text-sm text-primary dark:text-secondary hidden py-2 px-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-          <i class="fas fa-check-circle mr-2"></i> Thanks! Your demo listing is noted locally.
-        </p>
-      </form>
-    </div>
+
+  <!-- User Type Selection -->
+  <div class="user-type-tabs">
+    <button id="farmerTab" class="tab-button active mr-4">I'm a Farmer</button>
+    <button id="buyerTab" class="tab-button">I'm a Buyer</button>
   </div>
 
-  <!-- Footer -->
+  <!-- FARMER CONTENT (DEFAULT) -->
+  <div id="farmerContent" class="tab-content active">
+    <!-- HERO -->
+    <section id="hero" class="relative">
+      <div class="absolute inset-0 -z-10">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" alt="Fresh produce" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/60"></div>
+      </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-28 lg:py-36 text-white">
+        <h1 class="text-3xl sm:text-5xl font-bold leading-tight max-w-3xl">Sell smarter. Earn better. Connect directly with local buyers.</h1>
+        <p class="mt-4 text-base sm:text-lg max-w-2xl text-white/90">List your produce, compare offers, and deliver to nearby restaurants, retail stores, and markets—without middlemen.</p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href="#register" class="px-6 py-3 rounded-lg btn-primary font-semibold flex items-center gap-2">
+            <i class="fas fa-user-plus"></i> Register Now
+          </a>
+          <a href="#browse" class="px-6 py-3 rounded-lg btn-secondary font-semibold flex items-center gap-2">
+            <i class="fas fa-search"></i> Find Local Buyers
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how" class="section-padding bg-white dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold">How it works</h2>
+          <p class="text-primary dark:text-secondary mt-2">A simple 4-step process from listing to delivery.</p>
+        </div>
+        <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">1</div>
+            <div class="text-primary dark:text-secondary font-semibold">Create your listing</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Tell us your produce, quantity, and location. It takes less than a minute.</p>
+          </div>
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">2</div>
+            <div class="text-primary dark:text-secondary font-semibold">Get matched</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">See nearby buyers actively looking for your produce and their average offers.</p>
+          </div>
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">3</div>
+            <div class="text-primary dark:text-secondary font-semibold">Negotiate & confirm</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Chat, confirm price & schedule pickup or delivery directly with buyers.</p>
+          </div>
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">4</div>
+            <div class="text-primary dark:text-secondary font-semibold">Deliver & get paid</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Complete delivery and receive payment through your preferred method.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAP -->
+    <section id="map" class="py-16 bg-white dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row gap-10 items-start">
+          <!-- Map container -->
+          <div class="flex-1">
+            <h2 class="text-3xl font-bold mb-2">Buyers near you</h2>
+            <p class="text-neutral-600 dark:text-gray-300">Explore buyers within your radius using the interactive map below.</p>
+            <div id="mapContainer" class="mt-6"></div>
+            <div id="locationStatus" class="location-status text-sm text-neutral-600 dark:text-gray-300 mt-3">
+              Click "Use My Location" to see buyers near you.
+            </div>
+          </div>
+          <!-- Search controls -->
+          <div class="w-full lg:max-w-sm p-6 rounded-xl bg-light dark:bg-gray-800 hand-drawn-border">
+            <h3 class="font-semibold text-lg flex items-center gap-2 text-primary dark:text-secondary">
+              <i class="fas fa-map-marker-alt"></i> Your location
+            </h3>
+            <p class="text-sm text-neutral-600 dark:text-gray-300 mt-1">Allow location access to find buyers near you.</p>
+            <div class="mt-5 space-y-4">
+              <button id="locateMe" class="w-full px-4 py-2 rounded-lg btn-primary flex items-center justify-center gap-2">
+                <i class="fas fa-location-arrow"></i> Use My Location
+              </button>
+              <div class="text-center text-sm text-neutral-500 dark:text-gray-400">or</div>
+              <input id="locationInput" type="text" placeholder="Enter your location manually" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
+              <div>
+                <label class="block text-sm font-medium mb-1 dark:text-gray-300">Search Radius: <span id="distanceLabel">15</span> km</label>
+                <input id="distanceRangeMap" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
+              </div>
+              <p class="text-xs text-neutral-500 dark:text-gray-400">This updates the buyers list based on your location.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEARCH + LISTINGS -->
+    <section id="browse" class="section-padding bg-light dark:bg-dark">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div>
+            <h2 class="text-3xl font-bold">Find buyers for your produce</h2>
+            <p class="text-neutral-600 dark:text-gray-300 mt-1">Type to search and refine with filters. Results update instantly.</p>
+          </div>
+          <a href="#register" class="px-5 py-2.5 rounded-lg btn-primary flex items-center gap-2 whitespace-nowrap">
+            <i class="fas fa-plus"></i> List Your Produce
+          </a>
+        </div>
+        <div class="grid md:grid-cols-4 gap-5 mb-6">
+          <div class="md:col-span-2">
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Search by produce</label>
+            <div class="relative">
+              <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input id="searchInput" type="text" placeholder="e.g., tomatoes, wheat, eggs" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Type</label>
+            <div class="relative">
+              <i class="fas fa-tag absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <select id="produceTypeFilter" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+                <option value="">All types</option>
+                <option value="vegetable">Vegetables</option>
+                <option value="fruit">Fruits</option>
+                <option value="grain">Grains</option>
+                <option value="dairy">Dairy</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Max Distance: <span id="distanceValue">15</span> km</label>
+            <input id="distanceRange" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
+          </div>
+        </div>
+        <div class="text-sm text-neutral-600 dark:text-gray-300 mb-6"><span id="resultsCount">0</span> buyers match your search.</div>
+        <div id="buyersGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </div>
+    </section>
+
+    <!-- SUPPLY CHAIN TRACKING -->
+    <section id="supply-chain" class="py-16 bg-white dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold mb-2">Track Your Produce Journey</h2>
+        <p class="text-neutral-600 dark:text-gray-300 mb-8">See how your produce travels from farm to consumer with full transparency.</p>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+          <div>
+            <h3 class="text-xl font-semibold mb-4 flex items-center gap-2 text-primary dark:text-secondary">
+              <i class="fas fa-qrcode"></i> Scan QR Code
+            </h3>
+            <div id="qr-scanner" class="mb-4">
+              <i class="fas fa-camera text-4xl text-gray-400 mb-2"></i>
+              <p class="text-gray-500">Click to activate QR scanner</p>
+            </div>
+            <p class="text-sm text-neutral-500 dark:text-gray-400">Scan the QR code on your produce to view its complete journey from farm to market.</p>
+          </div>
+          
+          <div>
+            <h3 class="text-xl font-semibold mb-4 flex items-center gap-2 text-primary dark:text-secondary">
+              <i class="fas fa-map-marked-alt"></i> Supply Chain Journey
+            </h3>
+            <div class="bg-light dark:bg-gray-800 p-6 rounded-xl hand-drawn-border">
+              <div class="timeline">
+                <div class="timeline-step">
+                  <h4 class="font-semibold">Farm Harvest</h4>
+                  <p class="text-sm text-neutral-600 dark:text-gray-300">October 10, 2023 - 9:00 AM</p>
+                  <p class="text-sm mt-1">Organic tomatoes harvested at Green Valley Farms</p>
+                </div>
+                <div class="timeline-step">
+                  <h4 class="font-semibold">Quality Check</h4>
+                  <p class="text-sm text-neutral-600 dark:text-gray-300">October 10, 2023 - 11:30 AM</p>
+                  <p class="text-sm mt-1">Passed quality inspection with 98% grade A produce</p>
+                </div>
+                <div class="timeline-step">
+                  <h4 class="font-semibold">Packaging</h4>
+                  <p class="text-sm text-neutral-600 dark:text-gray-300">October 10, 2023 - 2:15 PM</p>
+                  <p class="text-sm mt-1">Packaged in eco-friendly containers with QR code labels</p>
+                </div>
+                <div class="timeline-step">
+                  <h4 class="font-semibold">Transportation</h4>
+                  <p class="text-sm text-neutral-600 dark:text-gray-300">October 11, 2023 - 8:00 AM</p>
+                  <p class="text-sm mt-1">Shipped via refrigerated transport to distribution center</p>
+                </div>
+                <div class="timeline-step">
+                  <h4 class="font-semibold">Store Delivery</h4>
+                  <p class="text-sm text-neutral-600 dark:text-gray-300">October 12, 2023 - 10:00 AM</p>
+                  <p class="text-sm mt-1">Delivered to City Fresh Market for consumer purchase</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REGISTRATION -->
+    <section id="register" class="py-16 bg-white dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-10 items-start">
+          <div>
+            <h2 class="text-3xl font-bold">Ready to earn better?</h2>
+            <p class="text-neutral-600 dark:text-gray-300 mt-2">Create a quick listing so buyers can reach out to you.</p>
+            <div class="mt-6 p-6 bg-light dark:bg-gray-800 rounded-xl hand-drawn-border">
+              <h3 class="font-semibold text-lg flex items-center gap-2 text-primary dark:text-secondary">
+                <i class="fas fa-info-circle"></i> Why register with us?
+              </h3>
+              <ul class="mt-3 space-y-2 text-sm">
+                <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> <span>No middlemen - keep more profit</span></li>
+                <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> <span>Connect directly with verified buyers</span></li>
+                <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> <span>Get fair prices for your produce</span></li>
+              </ul>
+            </div>
+          </div>
+          <form id="listingForm" class="p-6 rounded-xl bg-light dark:bg-gray-800 space-y-5 hand-drawn-border" onsubmit="return false;">
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Your Name</label>
+              <input required type="text" name="name" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., Suman Yadav" />
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Type</label>
+              <select required name="produceType" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+                <option value="">Select type</option>
+                <option value="vegetable">Vegetables</option>
+                <option value="fruit">Fruits</option>
+                <option value="grain">Grains</option>
+                <option value="dairy">Dairy</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Name</label>
+              <input required type="text" name="produce" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., Organic Wheat, Tomatoes" />
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="text-sm font-medium block mb-1 dark:text-gray-300">Quantity</label>
+                <input required type="number" min="1" name="quantity" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., 100" />
+              </div>
+              <div>
+                <label class="text-sm font-medium block mb-1 dark:text-gray-300">Unit</label>
+                <select name="unit" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+                  <option value="kg">kg</option>
+                  <option value="quintal">Quintal</option>
+                  <option value="ton">Ton</option>
+                  <option value="piece">Piece</option>
+                  <option value="dozen">Dozen</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Location</label>
+              <input required type="text" name="location" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., Ghaziabad" />
+            </div>
+            <button id="submitListing" class="w-full px-4 py-2.5 rounded-lg btn-primary flex items-center justify-center gap-2">
+              <i class="fas fa-paper-plane"></i> Submit Listing (Demo)
+            </button>
+            <p id="formStatus" class="text-sm text-primary dark:text-secondary hidden py-2 px-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <i class="fas fa-check-circle mr-2"></i> Thanks! Your demo listing is noted locally.
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- BUYER CONTENT (HIDDEN BY DEFAULT) -->
+  <div id="buyerContent" class="tab-content">
+    <!-- BUYER HERO -->
+    <section id="buyer-hero" class="relative">
+      <div class="absolute inset-0 -z-10">
+        <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=1600&auto=format&fit=crop" alt="Fresh produce market" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/60"></div>
+      </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-28 lg:py-36 text-white">
+        <h1 class="text-3xl sm:text-5xl font-bold leading-tight max-w-3xl">Source fresh produce directly from local farmers</h1>
+        <p class="mt-4 text-base sm:text-lg max-w-2xl text-white/90">Find quality produce, negotiate fair prices, and build direct relationships with farmers in your area.</p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href="#buyer-register" class="px-6 py-3 rounded-lg btn-primary font-semibold flex items-center gap-2">
+            <i class="fas fa-user-plus"></i> Register as Buyer
+          </a>
+          <a href="#buyer-browse" class="px-6 py-3 rounded-lg btn-secondary font-semibold flex items-center gap-2">
+            <i class="fas fa-search"></i> Browse Farmers
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS FOR BUYERS -->
+    <section class="section-padding bg-white dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <h2 class="text-3xl sm:text-4xl font-bold">How it works for buyers</h2>
+          <p class="text-primary dark:text-secondary mt-2">A simple process to source directly from farmers.</p>
+        </div>
+        <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">1</div>
+            <div class="text-primary dark:text-secondary font-semibold">Search farmers</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Find farmers near you with the produce you need.</p>
+          </div>
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">2</div>
+            <div class="text-primary dark:text-secondary font-semibold">Compare offers</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">View quality, prices, and availability from multiple farmers.</p>
+          </div>
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">3</div>
+            <div class="text-primary dark:text-secondary font-semibold">Place your order</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Specify quantity, desired price, and delivery preferences.</p>
+          </div>
+          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
+            <div class="step-number">4</div>
+            <div class="text-primary dark:text-secondary font-semibold">Receive fresh produce</div>
+            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Get quality produce directly from farm to your business.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BUYER MAP -->
+    <section class="py-16 bg-white dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row gap-10 items-start">
+          <!-- Map container -->
+          <div class="flex-1">
+            <h2 class="text-3xl font-bold mb-2">Farmers near you</h2>
+            <p class="text-neutral-600 dark:text-gray-300">Explore farmers within your radius using the interactive map below.</p>
+            <div id="buyerMapContainer" class="mt-6"></div>
+            <div id="buyerLocationStatus" class="location-status text-sm text-neutral-600 dark:text-gray-300 mt-3">
+              Click "Use My Location" to see farmers near you.
+            </div>
+          </div>
+          <!-- Search controls -->
+          <div class="w-full lg:max-w-sm p-6 rounded-xl bg-light dark:bg-gray-800 hand-drawn-border">
+            <h3 class="font-semibold text-lg flex items-center gap-2 text-primary dark:text-secondary">
+              <i class="fas fa-map-marker-alt"></i> Your location
+            </h3>
+            <p class="text-sm text-neutral-600 dark:text-gray-300 mt-1">Allow location access to find farmers near you.</p>
+            <div class="mt-5 space-y-4">
+              <button id="buyerLocateMe" class="w-full px-4 py-2 rounded-lg btn-primary flex items-center justify-center gap-2">
+                <i class="fas fa-location-arrow"></i> Use My Location
+              </button>
+              <div class="text-center text-sm text-neutral-500 dark:text-gray-400">or</div>
+              <input id="buyerLocationInput" type="text" placeholder="Enter your location manually" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
+              <div>
+                <label class="block text-sm font-medium mb-1 dark:text-gray-300">Search Radius: <span id="buyerDistanceLabel">15</span> km</label>
+                <input id="buyerDistanceRangeMap" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
+              </div>
+              <p class="text-xs text-neutral-500 dark:text-gray-400">This updates the farmers list based on your location.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BUYER SEARCH + LISTINGS -->
+    <section id="buyer-browse" class="section-padding bg-light dark:bg-dark">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div>
+            <h2 class="text-3xl font-bold">Find farmers with the produce you need</h2>
+            <p class="text-neutral-600 dark:text-gray-300 mt-1">Type to search and refine with filters. Results update instantly.</p>
+          </div>
+          <button id="openOrderModal" class="px-5 py-2.5 rounded-lg btn-primary flex items-center gap-2 whitespace-nowrap">
+            <i class="fas fa-plus"></i> Place Order Request
+          </button>
+        </div>
+        <div class="grid md:grid-cols-4 gap-5 mb-6">
+          <div class="md:col-span-2">
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Search by produce</label>
+            <div class="relative">
+              <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input id="buyerSearchInput" type="text" placeholder="e.g., tomatoes, wheat, eggs" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Type</label>
+            <div class="relative">
+              <i class="fas fa-tag absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <select id="buyerProduceTypeFilter" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+                <option value="">All types</option>
+                <option value="vegetable">Vegetables</option>
+                <option value="fruit">Fruits</option>
+                <option value="grain">Grains</option>
+                <option value="dairy">Dairy</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Max Distance: <span id="buyerDistanceValue">15</span> km</label>
+            <input id="buyerDistanceRange" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
+          </div>
+        </div>
+        <div class="text-sm text-neutral-600 dark:text-gray-300 mb-6"><span id="buyerResultsCount">0</span> farmers match your search.</div>
+        <div id="farmersGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </div>
+    </section>
+
+    <!-- BUYER REGISTRATION -->
+    <section id="buyer-register" class="py-16 bg-white dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-10 items-start">
+          <div>
+            <h2 class="text-3xl font-bold">Ready to source directly?</h2>
+            <p class="text-neutral-600 dark:text-gray-300 mt-2">Register as a buyer to connect with local farmers.</p>
+            <div class="mt-6 p-6 bg-light dark:bg-gray-800 rounded-xl hand-drawn-border">
+              <h3 class="font-semibold text-lg flex items-center gap-2 text-primary dark:text-secondary">
+                <i class="fas fa-info-circle"></i> Benefits for buyers
+              </h3>
+              <ul class="mt-3 space-y-2 text-sm">
+                <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> <span>Fresh, quality produce directly from source</span></li>
+                <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> <span>Competitive pricing without middlemen</span></li>
+                <li class="flex items-start gap-2 text-neutral-600 dark:text-gray-300"><i class="fas fa-check-circle text-primary dark:text-secondary mt-1"></i> <span>Build long-term relationships with farmers</span></li>
+              </ul>
+            </div>
+          </div>
+          <form id="buyerRegistrationForm" class="p-6 rounded-xl bg-light dark:bg-gray-800 space-y-5 hand-drawn-border" onsubmit="return false;">
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Business Name</label>
+              <input required type="text" name="businessName" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., City Fresh Market" />
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Your Name</label>
+              <input required type="text" name="name" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., Rajesh Kumar" />
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Email</label>
+              <input required type="email" name="email" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="your.email@example.com" />
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Phone Number</label>
+              <input required type="tel" name="phone" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., 9876543210" />
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Business Type</label>
+              <select required name="businessType" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+                <option value="">Select type</option>
+                <option value="restaurant">Restaurant</option>
+                <option value="retail">Retail Store</option>
+                <option value="market">Market</option>
+                <option value="processor">Processor</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Location</label>
+              <input required type="text" name="location" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., Connaught Place, Delhi" />
+            </div>
+            <button id="submitBuyerRegistration" class="w-full px-4 py-2.5 rounded-lg btn-primary flex items-center justify-center gap-2">
+              <i class="fas fa-paper-plane"></i> Register as Buyer
+            </button>
+            <p id="buyerFormStatus" class="text-sm text-primary dark:text-secondary hidden py-2 px-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <i class="fas fa-check-circle mr-2"></i> Thanks! Your registration is complete.
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- FOOTER -->
   <footer class="py-12 border-t bg-white dark:bg-gray-900 text-center text-neutral-500 dark:text-gray-400 text-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col md:flex-row justify-between items-center gap-6">
@@ -395,7 +534,253 @@
       </div>
     </div>
   </footer>
-  <!-- SCRIPT SECTION -->
- <script src="script.js"></script>
-</body>
+
+  <!-- LOGIN MODAL -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-semibold dark:text-white">Login</h3>
+          <button id="closeLoginModal" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Email</label>
+            <input type="email" required class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="your.email@example.com">
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Password</label>
+            <input type="password" required class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="Your password">
+          </div>
+          <button type="submit" class="w-full px-4 py-2 rounded-lg btn-primary "
+          >
+           Login to Dashboard</button>
+        </form>
+        <p class="text-sm text-center mt-4 text-gray-500 dark:text-gray-400">
+          Demo: Use any credentials to access the demo dashboard
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER MODAL FOR BUYERS -->
+  <div id="orderModal" class="modal">
+    <div class="modal-content">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-semibold dark:text-white">Place Order Request</h3>
+          <button id="closeOrderModal" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="orderForm" class="space-y-4">
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Type</label>
+            <select required name="produceType" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+              <option value="">Select type</option>
+              <option value="vegetable">Vegetables</option>
+              <option value="fruit">Fruits</option>
+              <option value="grain">Grains</option>
+              <option value="dairy">Dairy</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Name</label>
+            <input required type="text" name="produce" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., Organic Tomatoes, Basmati Rice">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Quantity</label>
+              <input required type="number" min="1" name="quantity" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., 100">
+            </div>
+            <div>
+              <label class="text-sm font-medium block mb-1 dark:text-gray-300">Unit</label>
+              <select name="unit" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+                <option value="kg">kg</option>
+                <option value="quintal">Quintal</option>
+                <option value="ton">Ton</option>
+                <option value="piece">Piece</option>
+                <option value="dozen">Dozen</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Maximum Price (₹ per unit)</label>
+            <input required type="number" min="1" step="0.5" name="maxPrice" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="e.g., 30.5">
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Delivery Date</label>
+            <input required type="date" name="deliveryDate" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
+          </div>
+          <div>
+            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Additional Notes</label>
+            <textarea name="notes" rows="3" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" placeholder="Any special requirements or quality specifications"></textarea>
+          </div>
+          <button type="submit" class="w-full px-4 py-2 rounded-lg btn-primary">Submit Order Request</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUYER DASHBOARD (HIDDEN BY DEFAULT) -->
+  <div id="buyerDashboard" class="hidden">
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <div class="dashboard-sidebar">
+        <div class="flex items-center gap-2 mb-8">
+          <span class="inline-block w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+            <i class="fas fa-leaf text-white text-sm"></i>
+          </span>
+          <span class="text-white font-medium">Buyer Dashboard</span>
+        </div>
+        
+        <nav class="space-y-2">
+          <a href="#dashboard-overview" class="block py-2 px-4 rounded-lg bg-white/10 text-white font-medium">
+            <i class="fas fa-chart-pie mr-2"></i> Overview
+          </a>
+          <a href="#dashboard-contacts" class="block py-2 px-4 rounded-lg hover:bg-white/10 text-white transition-colors">
+            <i class="fas fa-users mr-2"></i> Farmer Contacts
+          </a>
+          <a href="#dashboard-orders" class="block py-2 px-4 rounded-lg hover:bg-white/10 text-white transition-colors">
+            <i class="fas fa-shopping-cart mr-2"></i> Orders
+          </a>
+          <a href="#dashboard-analytics" class="block py-2 px-4 rounded-lg hover:bg-white/10 text-white transition-colors">
+            <i class="fas fa-chart-line mr-2"></i> Analytics
+          </a>
+          <a href="#" id="logoutBtn" class="block py-2 px-4 rounded-lg hover:bg-white/10 text-white transition-colors mt-8">
+            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+          </a>
+        </nav>
+      </div>
+      
+      <!-- Main Content -->
+      <div class="dashboard-main">
+        <div class="mb-6">
+          <h1 class="text-2xl font-bold dark:text-white">Buyer Dashboard</h1>
+          <p class="text-neutral-600 dark:text-gray-300">Welcome back! Here's your business overview.</p>
+        </div>
+        
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div class="stat-card">
+            <div class="flex items-center">
+              <div class="p-3 rounded-lg bg-green-100 dark:bg-green-900/30 mr-4">
+                <i class="fas fa-users text-green-600 dark:text-green-400"></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Farmer Contacts</p>
+                <p class="text-xl font-bold dark:text-white">24</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="flex items-center">
+              <div class="p-3 rounded-lg bg-blue-100 dark:bg-blue-900/30 mr-4">
+                <i class="fas fa-shopping-cart text-blue-600 dark:text-blue-400"></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Active Orders</p>
+                <p class="text-xl font-bold dark:text-white">8</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="flex items-center">
+              <div class="p-3 rounded-lg bg-orange-100 dark:bg-orange-900/30 mr-4">
+                <i class="fas fa-truck text-orange-600 dark:text-orange-400"></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Pending Delivery</p>
+                <p class="text-xl font-bold dark:text-white">3</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="flex items-center">
+              <div class="p-3 rounded-lg bg-purple-100 dark:bg-purple-900/30 mr-4">
+                <i class="fas fa-rupee-sign text-purple-600 dark:text-purple-400"></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Monthly Spend</p>
+                <p class="text-xl font-bold dark:text-white">₹82,560</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div class="stat-card">
+            <h3 class="font-semibold mb-4 dark:text-white">Produce Types Ordered</h3>
+            <canvas id="produceChart" height="250"></canvas>
+          </div>
+          
+          <div class="stat-card">
+            <h3 class="font-semibold mb-4 dark:text-white">Monthly Spending Trend</h3>
+            <canvas id="spendingChart" height="250"></canvas>
+          </div>
+        </div>
+        
+        <!-- Farmer Contacts Table -->
+        <div class="stat-card">
+          <h3 class="font-semibold mb-4 dark:text-white">Recent Farmer Contacts</h3>
+          <div class="overflow-x-auto">
+            <table class="min-w-full">
+              <thead>
+                <tr class="border-b border-gray-200 dark:border-gray-700">
+                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Farmer</th>
+                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Produce</th>
+                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
+                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Location</th>
+                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Contact Date</th>
+                  <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                <tr>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Rajesh Kumar</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Organic Wheat</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">200 kg</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Meerut</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">2023-10-15</td>
+                  <td class="py-3 px-4 whitespace-nowrap">
+                    <span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-100 text-xs rounded-full">Pending</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Suman Yadav</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Fresh Tomatoes</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">50 kg</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Ghaziabad</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">2023-10-14</td>
+                  <td class="py-3 px-4 whitespace-nowrap">
+                    <span class="px-2 py-1 bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-100 text-xs rounded-full">Confirmed</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Amrit Singh</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Basmati Rice</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">500 kg</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">Karnal</td>
+                  <td class="py-3 px-4 whitespace-nowrap dark:text-white">2023-10-13</td>
+                  <td class="py-3 px-4 whitespace-nowrap">
+                    <span class="px-2 py-1 bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-100 text-xs rounded-full">Negotiating</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script src="script.js"></script>
+ </body>
 </html>
