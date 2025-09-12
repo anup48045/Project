@@ -207,117 +207,8 @@
       </div>
     </div>
   </div>
-    <!-- HOW IT WORKS -->
-    <section id="how" class="section-padding bg-white dark:bg-gray-900">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto mb-12">
-          <h2 class="text-3xl sm:text-4xl font-bold">How it works</h2>
-          <p class="text-primary dark:text-secondary mt-2">A simple 4-step process from listing to delivery.</p>
-        </div>
-        <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
-            <div class="step-number">1</div>
-            <div class="text-primary dark:text-secondary font-semibold">Create your listing</div>
-            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Tell us your produce, quantity, and location. It takes less than a minute.</p>
-          </div>
-          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
-            <div class="step-number">2</div>
-            <div class="text-primary dark:text-secondary font-semibold">Get matched</div>
-            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">See nearby buyers actively looking for your produce and their average offers.</p>
-          </div>
-          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
-            <div class="step-number">3</div>
-            <div class="text-primary dark:text-secondary font-semibold">Negotiate & confirm</div>
-            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Chat, confirm price & schedule pickup or delivery directly with buyers.</p>
-          </div>
-          <div class="p-6 rounded-xl bg-white dark:bg-gray-800 card-hover hand-drawn-border">
-            <div class="step-number">4</div>
-            <div class="text-primary dark:text-secondary font-semibold">Deliver & get paid</div>
-            <p class="mt-2 text-sm text-neutral-600 dark:text-gray-300">Complete delivery and receive payment through your preferred method.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- MAP -->
-    <section id="map" class="py-16 bg-white dark:bg-gray-900">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col lg:flex-row gap-10 items-start">
-          <!-- Map container -->
-          <div class="flex-1">
-            <h2 class="text-3xl font-bold mb-2">Buyers near you</h2>
-            <p class="text-neutral-600 dark:text-gray-300">Explore buyers within your radius using the interactive map below.</p>
-            <div id="mapContainer" class="mt-6"></div>
-            <div id="locationStatus" class="location-status text-sm text-neutral-600 dark:text-gray-300 mt-3">
-              Click "Use My Location" to see buyers near you.
-            </div>
-          </div>
-          <!-- Search controls -->
-          <div class="w-full lg:max-w-sm p-6 rounded-xl bg-light dark:bg-gray-800 hand-drawn-border">
-            <h3 class="font-semibold text-lg flex items-center gap-2 text-primary dark:text-secondary">
-              <i class="fas fa-map-marker-alt"></i> Your location
-            </h3>
-            <p class="text-sm text-neutral-600 dark:text-gray-300 mt-1">Allow location access to find buyers near you.</p>
-            <div class="mt-5 space-y-4">
-              <button id="locateMe" class="w-full px-4 py-2 rounded-lg btn-primary flex items-center justify-center gap-2">
-                <i class="fas fa-location-arrow"></i> Use My Location
-              </button>
-              <div class="text-center text-sm text-neutral-500 dark:text-gray-400">or</div>
-              <input id="locationInput" type="text" placeholder="Enter your location manually" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
-              <div>
-                <label class="block text-sm font-medium mb-1 dark:text-gray-300">Search Radius: <span id="distanceLabel">15</span> km</label>
-                <input id="distanceRangeMap" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
-              </div>
-              <p class="text-xs text-neutral-500 dark:text-gray-400">This updates the buyers list based on your location.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SEARCH + LISTINGS -->
-    <section id="browse" class="section-padding bg-light dark:bg-dark">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-          <div>
-            <h2 class="text-3xl font-bold">Find buyers for your produce</h2>
-            <p class="text-neutral-600 dark:text-gray-300 mt-1">Type to search and refine with filters. Results update instantly.</p>
-          </div>
-          <a href="#register" class="px-5 py-2.5 rounded-lg btn-primary flex items-center gap-2 whitespace-nowrap">
-            <i class="fas fa-plus"></i> List Your Produce
-          </a>
-        </div>
-        <div class="grid md:grid-cols-4 gap-5 mb-6">
-          <div class="md:col-span-2">
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Search by produce</label>
-            <div class="relative">
-              <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-              <input id="searchInput" type="text" placeholder="e.g., tomatoes, wheat, eggs" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
-            </div>
-          </div>
-          <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Produce Type</label>
-            <div class="relative">
-              <i class="fas fa-tag absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-              <select id="produceTypeFilter" class="pl-10 w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white">
-                <option value="">All types</option>
-                <option value="vegetable">Vegetables</option>
-                <option value="fruit">Fruits</option>
-                <option value="grain">Grains</option>
-                <option value="dairy">Dairy</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <label class="text-sm font-medium block mb-1 dark:text-gray-300">Max Distance: <span id="distanceValue">15</span> km</label>
-            <input id="distanceRange" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
-          </div>
-        </div>
-        <div class="text-sm text-neutral-600 dark:text-gray-300 mb-6"><span id="resultsCount">0</span> buyers match your search.</div>
-        <div id="buyersGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-      </div>
-    </section>
-
+   
+   
     <!-- SUPPLY CHAIN TRACKING -->
     <section id="supply-chain" class="py-16 bg-white dark:bg-gray-900">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -407,40 +298,7 @@
     </section>
 
     <!-- BUYER MAP -->
-    <section id="map" class="py-16 bg-white dark:bg-gray-900">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col lg:flex-row gap-10 items-start">
-          <!-- Map container -->
-          <div class="flex-1">
-            <h2 class="text-3xl font-bold mb-2">Buyers near you</h2>
-            <p class="text-neutral-600 dark:text-gray-300">Explore buyers within your radius using the interactive map below.</p>
-            <div id="mapContainer" class="mt-6"></div>
-            <div id="locationStatus" class="location-status text-sm text-neutral-600 dark:text-gray-300 mt-3">
-              Click "Use My Location" to see buyers near you.
-            </div>
-          </div>
-          <!-- Search controls -->
-          <div class="w-full lg:max-w-sm p-6 rounded-xl bg-light dark:bg-gray-800 hand-drawn-border">
-            <h3 class="font-semibold text-lg flex items-center gap-2 text-primary dark:text-secondary">
-              <i class="fas fa-map-marker-alt"></i> Your location
-            </h3>
-            <p class="text-sm text-neutral-600 dark:text-gray-300 mt-1">Allow location access to find buyers near you.</p>
-            <div class="mt-5 space-y-4">
-              <button id="locateMe" class="w-full px-4 py-2 rounded-lg btn-primary flex items-center justify-center gap-2">
-                <i class="fas fa-location-arrow"></i> Use My Location
-              </button>
-              <div class="text-center text-sm text-neutral-500 dark:text-gray-400">or</div>
-              <input id="locationInput" type="text" placeholder="Enter your location manually" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white" />
-              <div>
-                <label class="block text-sm font-medium mb-1 dark:text-gray-300">Search Radius: <span id="distanceLabel">15</span> km</label>
-                <input id="distanceRangeMap" type="range" min="1" max="25" value="15" class="w-full cursor-pointer accent-primary" />
-              </div>
-              <p class="text-xs text-neutral-500 dark:text-gray-400">This updates the buyers list based on your location.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    
 
    <!-- BUYER SEARCH + LISTINGS -->
    <section id="buyer-browse" class="section-padding bg-light dark:bg-dark">
